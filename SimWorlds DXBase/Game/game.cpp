@@ -88,7 +88,7 @@ Game::Game(ID3D11Device* _pd3dDevice, HINSTANCE _hInstance) :m_playTime(0), m_my
 	VBPlane* plane = new VBPlane();
 	plane->init(100, _pd3dDevice);
 	plane->SetPos(Vector3(0.0f, 0.0f, 0.0f));
-	plane->SetScale(50.0f);
+	plane->SetScale(100.0f);
 	m_GameObjects.push_back(plane);
 
 	SpikedVB* spikes = new SpikedVB();

@@ -150,10 +150,34 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 
 void VBPlane::Tick(GameData* GD)
 {
-	for (int i = 0; i < m_size; i++)
+
+	if (GD->mouse->rgbButtons[0])
 	{
-		m_vertices[i].Pos =+ Vector3(0.0f,10.0f,0.0f);
+		int vert = 0;
+		for (int i = -(m_size - 1) / 2; i < (m_size - 1) / 2; i++)
+		{
+			for (int j = -(m_size - 1) / 2; j < (m_size - 1) / 2; j++)
+			{
+				//top
+				m_vertices[vert].Color = Color(1.0f, 0.0f, 1.0f, 1.0f);
+				m_vertices[vert++].Pos = Vector3((float)i, 0.5f * (float)(m_size - 1), (float)j);
+				m_vertices[vert].Color = Color(1.0f, 0.0f, 1.0f, 1.0f);
+				m_vertices[vert++].Pos = Vector3((float)i, 0.5f * (float)(m_size - 1), (float)(j + 1));
+				m_vertices[vert].Color = Color(1.0f, 0.0f, 1.0f, 1.0f);
+				m_vertices[vert++].Pos = Vector3((float)(i + 1), 0.5f * (float)(m_size - 1), (float)j);
+
+				m_vertices[vert].Color = Color(1.0f, 0.0f, 1.0f, 1.0f);
+				m_vertices[vert++].Pos = Vector3((float)(i + 1), 0.5f * (float)(m_size - 1), (float)j);
+				m_vertices[vert].Color = Color(1.0f, 0.0f, 1.0f, 1.0f);
+				m_vertices[vert++].Pos = Vector3((float)i, 0.5f * (float)(m_size - 1), (float)(j + 1));
+				m_vertices[vert].Color = Color(1.0f, 0.0f, 1.0f, 1.0f);
+				m_vertices[vert++].Pos = Vector3((float)(i + 1), 0.5f * (float)(m_size - 1), (float)(j + 1));
+				
+			}
+		}
 	}
+
+
 }
 	
 
