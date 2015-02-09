@@ -1,0 +1,10 @@
+M:\DXBase\MakeSpriteFont\bin\Debug\MakeSpriteFont.exe
+M:\DXBase\MakeSpriteFont\bin\Debug\MakeSpriteFont.pdb
+M:\DXBase\MakeSpriteFont\obj\Debug\MakeSpriteFont.csprojResolveAssemblyReference.cache
+M:\DXBase\MakeSpriteFont\obj\Debug\MakeSpriteFont.exe
+M:\DXBase\MakeSpriteFont\obj\Debug\MakeSpriteFont.pdb
+M:\SimWorlds DXBase\MakeSpriteFont\bin\Debug\MakeSpriteFont.exe
+M:\SimWorlds DXBase\MakeSpriteFont\bin\Debug\MakeSpriteFont.pdb
+M:\SimWorlds DXBase\MakeSpriteFont\obj\Debug\MakeSpriteFont.csprojResolveAssemblyReference.cache
+M:\SimWorlds DXBase\MakeSpriteFont\obj\Debug\MakeSpriteFont.exe
+M:\SimWorlds DXBase\MakeSpriteFont\obj\Debug\MakeSpriteFont.pdb
