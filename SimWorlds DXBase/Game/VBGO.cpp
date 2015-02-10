@@ -128,7 +128,7 @@ void VBGO::Draw(DrawData* _DD)
 
 	//and draw
 	_DD->pd3dImmediateContext->DrawIndexed(3 * m_numPrims, 0, 0);//number here will need to change depending on the primative topology!
-
+	//_DD->pd3dImmediateContext->
 }
 
 //--------------------------------------------------------------------------------------

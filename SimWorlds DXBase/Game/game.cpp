@@ -79,19 +79,19 @@ Game::Game(ID3D11Device* _pd3dDevice, HINSTANCE _hInstance) :m_playTime(0), m_my
 	Box->SetPitch( XM_PIDIV4 );
 	Box->SetScale( 20.0f );
 
-	VBCube* cube = new VBCube();
+	/*VBCube* cube = new VBCube();
 	cube->init(11, _pd3dDevice);
 	cube->SetPos(Vector3(100.0f, 0.0f, 0.0f));
 	cube->SetScale(4.0f);
-	m_GameObjects.push_back(cube);
+	m_GameObjects.push_back(cube);*/
 	
 	VBPlane* plane = new VBPlane();
 	plane->init(100, _pd3dDevice);
 	plane->SetPos(Vector3(0.0f, 0.0f, 0.0f));
-	plane->SetScale(100.0f);
+	plane->SetScale(4.0f);
 	m_GameObjects.push_back(plane);
 
-	SpikedVB* spikes = new SpikedVB();
+	/*SpikedVB* spikes = new SpikedVB();
 	spikes->init(11, _pd3dDevice);
 	spikes->SetPos(Vector3(0.0f, 0.0f, 100.0f));
 	spikes->SetScale(4.0f);
@@ -112,7 +112,7 @@ Game::Game(ID3D11Device* _pd3dDevice, HINSTANCE _hInstance) :m_playTime(0), m_my
 	Snail* snail = new Snail(_pd3dDevice, "../Assets/baseline.txt", 150, 0.98, 0.09f * XM_PI , 0.4f, Color(1.0f, 0.0f, 0.0f, 1.0f), Color(0.0f, 0.0f, 1.0f, 1.0f));
 	snail->SetPos(Vector3(-100.0f, 0.0f, 100.0f));
 	snail->SetScale(2.0f);
-	m_GameObjects.push_back(snail);
+	m_GameObjects.push_back(snail);*/
 
 	GameObject2D* logo = new GameObject2D("logo", _pd3dDevice);
 	logo->SetPos(200.0f * Vector2::One);

@@ -9,6 +9,12 @@ class VBPlane : public VBGO
 {
 public:
 	
+	float amp ;
+	float freq ;
+	float phase ;
+	float time ;
+	
+
 	VBPlane(){};
 	virtual ~VBPlane(){};
 
@@ -21,7 +27,7 @@ public:
 protected:
 	//this is to allow custom versions of this which create the basic cube and then distort it
 	//see Spirla, SpikedVB and Pillow
-	virtual void Transform(){};
+	virtual void Transform();
 
 	int m_size;
 	myVertex* m_vertices;
