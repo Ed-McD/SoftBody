@@ -14,6 +14,7 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 	//calculate number of vertices and primatives
 	int numVerts = 6 * (m_size - 1) * (m_size - 1);
 	m_numPrims = numVerts / 3;
+	m_numVertices = numVerts;
 	m_vertices = new myVertex[numVerts];
 	WORD* indices = new WORD[numVerts];
 	
@@ -33,18 +34,18 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 		for (int j = -(m_size - 1) / 2; j < (m_size - 1) / 2; j++)
 		{
 			//top
-			m_vertices[vert].Color = Color(1.0f, 0.0f, 0.0f, 1.0f);
+			m_vertices[vert].Color = Color(1.0f, 1.0f, 0.0f, 1.0f);
 			m_vertices[vert++].Pos = Vector3((float)i, 0.5f * (float)(m_size - 1), (float)j);
-			m_vertices[vert].Color = Color(1.0f, 0.0f, 0.0f, 1.0f);
+			m_vertices[vert].Color = Color(1.0f, 1.0f, 0.0f, 1.0f);
 			m_vertices[vert++].Pos = Vector3((float)i, 0.5f * (float)(m_size - 1), (float)(j + 1));
-			m_vertices[vert].Color = Color(1.0f, 0.0f, 0.0f, 1.0f);
+			m_vertices[vert].Color = Color(1.0f, 1.0f, 0.0f, 1.0f);
 			m_vertices[vert++].Pos = Vector3((float)(i + 1), 0.5f * (float)(m_size - 1), (float)j);
 
-			m_vertices[vert].Color = Color(1.0f, 0.0f, 0.0f, 1.0f);
+			m_vertices[vert].Color = Color(1.0f, 1.0f, 0.0f, 1.0f);
 			m_vertices[vert++].Pos = Vector3((float)(i + 1), 0.5f * (float)(m_size - 1), (float)j);
-			m_vertices[vert].Color = Color(1.0f, 0.0f, 0.0f, 1.0f);
+			m_vertices[vert].Color = Color(1.0f, 1.0f, 0.0f, 1.0f);
 			m_vertices[vert++].Pos = Vector3((float)i, 0.5f * (float)(m_size - 1), (float)(j + 1));
-			m_vertices[vert].Color = Color(1.0f, 0.0f, 0.0f, 1.0f);
+			m_vertices[vert].Color = Color(1.0f, 1.0f, 0.0f, 1.0f);
 			m_vertices[vert++].Pos = Vector3((float)(i + 1), 0.5f * (float)(m_size - 1), (float)(j + 1));
 			
 		}
@@ -60,7 +61,7 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 		m_vertices[i].Pos = newScale;
 	}
 	//carry out some kind of transform on these vertices to make this object more interesting
-	Transform();
+	//Transform();
 
 	//calculate the normals for the basic lighting in the base shader
 	for (int i = 0; i < m_numPrims; i++)
@@ -91,6 +92,7 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 
 void VBPlane::Tick(GameData* GD)
 {
+	time = time + GD->dt;
 	Transform();
 	/*if (GD->mouse->rgbButtons[0])
 	{ 
@@ -104,20 +106,29 @@ void VBPlane::Transform()
 {
 
 	
-	for (int i = 0; i < m_numPrims * 3; i++)
+
+
+
+	/*for (int i = 0; i < m_numVertices; i++)
 	{
 		float sineWave = amp * sin(((2 * XM_PI*freq)*time) + phase);
 
 		float vertPos = m_vertices[i].Pos.y;
 
 		float newPos = vertPos + sineWave;
-
-		m_vertices[i].Pos.y = newPos;
-		time = time + 10;
-		phase = phase + (3 * i);
 		
+		if (i % 2 == 0)
+		{
+			m_vertices[i].Pos.y = newPos;
+			phase = phase + (3 * i);
+		}
+		else
+		{
+			m_vertices[i].Pos.y = - newPos;
+			phase = phase + (3 * i);
+		}
 
-	}
+	}*/
 }
 	
 
@@ -130,10 +141,17 @@ void VBPlane::Draw(DrawData* _DD)
 
 	//Disable GPU access to the vertex buffer data.
 	_DD->pd3dImmediateContext->Map(m_VertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	
+	////Update the vertex buffer here.
+	//memcpy(mappedResource.pData, m_vertices, sizeof(m_vertices));
+
+	myVertex* p_vertices = (myVertex*)mappedResource.pData;
+
 	//Update the vertex buffer here.
-	memcpy(mappedResource.pData, m_vertices, sizeof(m_vertices));
+	memcpy(p_vertices, (void*)m_vertices, sizeof(myVertex) * m_numVertices);
+
 	//Reenable GPU access to the vertex buffer data.
- 	_DD->pd3dImmediateContext->Unmap(m_VertexBuffer, 1);
+ 	_DD->pd3dImmediateContext->Unmap(m_VertexBuffer, 0);
 
  	VBGO::Draw(_DD);
 	

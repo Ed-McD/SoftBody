@@ -124,10 +124,10 @@ HRESULT InitWindow( HINSTANCE hInstance, int nCmdShow )
 
     // Create window
     g_hInst = hInstance;
-    RECT rc = { 0, 0, 800, 600 };
+    RECT rc = { 0, 0, 1800, 900 };
     AdjustWindowRect( &rc, WS_OVERLAPPEDWINDOW, FALSE );
 	//SS Chnaged Window name
-    g_hWnd = CreateWindow( L"TutorialWindowClass", L"GEA TUTS PROJECT", WS_OVERLAPPEDWINDOW,
+    g_hWnd = CreateWindow( L"TutorialWindowClass", L"SIMWORLD GROOVINESS PROJECT", WS_OVERLAPPEDWINDOW,
                            CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance,
                            nullptr );
     if( !g_hWnd )

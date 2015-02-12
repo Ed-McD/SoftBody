@@ -13,6 +13,7 @@ public:
 	float freq ;
 	float phase ;
 	float time ;
+	float m_numVertices;
 	
 
 	VBPlane(){};
