@@ -53,7 +53,7 @@ Game::Game(ID3D11Device* _pd3dDevice, HINSTANCE _hInstance) :m_playTime(0), m_my
 	m_GD->GS = GS_PLAY_TPS_CAM;
 
 	//create a base camera
-	m_cam = new Camera(0.25f * XM_PI, 640.0f / 480.0f, 1.0f, 10000.0f, Vector3::Zero, Vector3::UnitY);
+	m_cam = new Camera(0.4f * XM_PI, 640.0f / 480.0f, 1.0f, 10000.0f, Vector3::Zero, Vector3::UnitY);
 	m_cam->SetPos( Vector3(0.0f, 300.0f,300.0f) );
 	m_GameObjects.push_back(m_cam);
 
@@ -62,7 +62,7 @@ Game::Game(ID3D11Device* _pd3dDevice, HINSTANCE _hInstance) :m_playTime(0), m_my
 
 	Turret_Base* base = new Turret_Base("treasure_chest.cmo", _pd3dDevice, m_myEF);
 	m_GameObjects.push_back(base);
-	base->SetPos(Vector3(100.0f, 0.0f, -100.0f));
+	base->SetPos(Vector3(0.0f, 0.0f, 0.0f));
 
 	m_TPSCam = new TPSCamera(0.25f * XM_PI, 640.0f / 480.0f, 1.0f, 10000.0f, base, Vector3::UnitY, Vector3(-200.0f, 100.0f, 0.0f));
 	m_GameObjects.push_back(m_TPSCam);

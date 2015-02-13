@@ -7,9 +7,10 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 	m_size = _size;
 	time = 0.0f;
 	freq = 3.0f;
-	phase = 10.0f;
-	amp = 0.5f;
+	amp = 5.0f;
 	float scale = 5.0f;
+	
+	
 
 	//calculate number of vertices and primatives
 	int numVerts = 6 * (m_size - 1) * (m_size - 1);
@@ -17,6 +18,7 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 	m_numVertices = numVerts;
 	m_vertices = new myVertex[numVerts];
 	WORD* indices = new WORD[numVerts];
+	
 	
 
 	//as using the standard VB shader set the tex-coords somewhere safe
@@ -34,18 +36,18 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 		for (int j = -(m_size - 1) / 2; j < (m_size - 1) / 2; j++)
 		{
 			//top
-			m_vertices[vert].Color = Color(1.0f, 1.0f, 0.0f, 1.0f);
+			m_vertices[vert].Color = Color(0.0f, 0.0f, 1.0f, 1.0f);
 			m_vertices[vert++].Pos = Vector3((float)i, 0.5f * (float)(m_size - 1), (float)j);
-			m_vertices[vert].Color = Color(1.0f, 1.0f, 0.0f, 1.0f);
+			m_vertices[vert].Color = Color(0.0f, 0.0f, 1.0f, 1.0f);
 			m_vertices[vert++].Pos = Vector3((float)i, 0.5f * (float)(m_size - 1), (float)(j + 1));
-			m_vertices[vert].Color = Color(1.0f, 1.0f, 0.0f, 1.0f);
+			m_vertices[vert].Color = Color(0.0f, 0.0f, 1.0f, 1.0f);
 			m_vertices[vert++].Pos = Vector3((float)(i + 1), 0.5f * (float)(m_size - 1), (float)j);
 
-			m_vertices[vert].Color = Color(1.0f, 1.0f, 0.0f, 1.0f);
+			m_vertices[vert].Color = Color(0.0f, 0.0f, 1.0f, 1.0f);
 			m_vertices[vert++].Pos = Vector3((float)(i + 1), 0.5f * (float)(m_size - 1), (float)j);
-			m_vertices[vert].Color = Color(1.0f, 1.0f, 0.0f, 1.0f);
+			m_vertices[vert].Color = Color(0.0f, 0.0f, 1.0f, 1.0f);
 			m_vertices[vert++].Pos = Vector3((float)i, 0.5f * (float)(m_size - 1), (float)(j + 1));
-			m_vertices[vert].Color = Color(1.0f, 1.0f, 0.0f, 1.0f);
+			m_vertices[vert].Color = Color(0.0f, 0.0f, 1.0f, 1.0f);
 			m_vertices[vert++].Pos = Vector3((float)(i + 1), 0.5f * (float)(m_size - 1), (float)(j + 1));
 			
 		}
@@ -104,8 +106,35 @@ void VBPlane::Tick(GameData* GD)
 
 void VBPlane::Transform()
 {
+	//for (int i = 0; i < m_numPrims; i++)
+	//{
+		for (int j = 0; j < m_numVertices; j++)
+		{
+			float newPos = amp * sin((2 * time) - m_vertices[j].Pos.x);
 
-	
+			m_vertices[j].Pos.y = newPos;
+		}
+	//}
+
+	//calculate the normals for the basic lighting in the base shader
+	for (int i = 0; i < m_numPrims; i++)
+	{
+		WORD V1 = 3 * i;
+		WORD V2 = 3 * i + 1;
+		WORD V3 = 3 * i + 2;
+
+		//build normals
+		Vector3 norm;
+		Vector3 vec1 = m_vertices[V1].Pos - m_vertices[V2].Pos;
+		Vector3 vec2 = m_vertices[V3].Pos - m_vertices[V2].Pos;
+		norm = vec1.Cross(vec2);
+		norm.Normalize();
+
+		m_vertices[V1].Norm = norm;
+		m_vertices[V2].Norm = norm;
+		m_vertices[V3].Norm = norm;
+	}
+
 
 
 
