@@ -6,9 +6,11 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 {
 	m_size = _size;
 	time = 0.0f;
-	freq = 3.0f;
-	amp = 5.0f;
+	freq = 2.0f;
+	amp = 2.5f;
+	phase = 1.0f;
 	float scale = 5.0f;
+
 	
 	
 
@@ -94,12 +96,33 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 
 void VBPlane::Tick(GameData* GD)
 {
+	
 	time = time + GD->dt;
 	Transform();
-	/*if (GD->mouse->rgbButtons[0])
+	if (GD->mouse->rgbButtons[0])
 	{ 
-		Transform();
-	}*/
+		freq = freq + 1.0f;
+	}
+	if (GD->mouse->rgbButtons[1])
+	{
+		freq = freq - 1.0f;
+	}
+	if (GD->keyboard[DIK_Q] & 0x80)
+	{
+		amp = amp + 1.0f;
+	}
+	if (GD->keyboard[DIK_E] & 0x80)
+	{
+		amp = amp - 1.0f;
+	}
+	if (GD->keyboard[DIK_A] & 0x80)
+	{
+		phase = phase + 0.005f;
+	}
+	if (GD->keyboard[DIK_D] & 0x80)
+	{
+		phase = phase - 0.005f;
+	}
 	
 }
 
@@ -110,7 +133,7 @@ void VBPlane::Transform()
 	//{
 		for (int j = 0; j < m_numVertices; j++)
 		{
-			float newPos = amp * sin((2 * time) - m_vertices[j].Pos.x);
+			float newPos = amp * sin((freq * time) + ((m_vertices[j].Pos.x) * phase));
 
 			m_vertices[j].Pos.y = newPos;
 		}
