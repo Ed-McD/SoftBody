@@ -14,6 +14,8 @@ public:
 	float phase ;
 	float time ;
 	float m_numVertices;
+	int m_diagonal;
+	int m_
 	
 
 	VBPlane(){};

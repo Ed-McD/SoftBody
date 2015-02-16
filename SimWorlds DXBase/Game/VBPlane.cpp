@@ -10,6 +10,7 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 	amp = 2.5f;
 	phase = 1.0f;
 	float scale = 5.0f;
+	m_diagonal = 0;
 
 	
 	
@@ -123,21 +124,74 @@ void VBPlane::Tick(GameData* GD)
 	{
 		phase = phase - 0.005f;
 	}
+	if ((GD->keyboard[DIK_LSHIFT] & 0x80) && !(GD->prevKeyboard[DIK_LSHIFT] & 0x80))
+	{
+ 		m_diagonal ++;
+		if (m_diagonal > 3)
+			m_diagonal = 0;
+	}
 	
 }
 
 
 void VBPlane::Transform()
 {
-	//for (int i = 0; i < m_numPrims; i++)
-	//{
+	switch (m_diagonal)
+	{
+	case 0:
 		for (int j = 0; j < m_numVertices; j++)
 		{
 			float newPos = amp * sin((freq * time) + ((m_vertices[j].Pos.x) * phase));
 
 			m_vertices[j].Pos.y = newPos;
 		}
-	//}
+		break;
+	case 1:
+		for (int j = 0; j < m_numVertices; j++)
+		{
+			float newPos = amp * sin((freq * time) + ((m_vertices[j].Pos.x) * phase) + ((m_vertices[j].Pos.z) * phase));
+
+			m_vertices[j].Pos.y = newPos;
+		}
+		break;
+	case 2:
+		for (int j = 0; j < m_numVertices; j++)
+		{
+			float newPos = amp * sin((freq * time) + ((m_vertices[j].Pos.z) * phase));
+
+			m_vertices[j].Pos.y = newPos;
+		}
+		break;
+	case 3:
+		for (int j = 0; j < m_numVertices; j++)
+		{
+			float newPos = amp * sin((freq * time) - ((m_vertices[j].Pos.x) * phase) + ((m_vertices[j].Pos.z) * phase));
+
+			m_vertices[j].Pos.y = newPos;
+		}
+		break;
+	}
+
+
+	/*if (m_diagonal == true)
+	{
+		for (int j = 0; j < m_numVertices; j++)
+		{
+			float newPos = amp * sin((freq * time) + ((m_vertices[j].Pos.x) * phase) + ((m_vertices[j].Pos.z) * phase));
+
+			m_vertices[j].Pos.y = newPos;
+		}
+	}
+	else
+	{
+		for (int j = 0; j < m_numVertices; j++)
+		{
+			float newPos = amp * sin((freq * time) + ((m_vertices[j].Pos.x) * phase));
+
+			m_vertices[j].Pos.y = newPos;
+		}
+	}*/
+
 
 	//calculate the normals for the basic lighting in the base shader
 	for (int i = 0; i < m_numPrims; i++)
