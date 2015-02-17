@@ -1,6 +1,7 @@
 #include "gamedata.h"
 #include "VBPLane.h"
 #include "drawdata.h"
+#
 
 void VBPlane::init(int _size, ID3D11Device* GD)
 {
@@ -8,9 +9,11 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 	time = 0.0f;
 	freq = 2.0f;
 	amp = 2.5f;
-	phase = 1.0f;
+	waveLength = 0.025f;
 	float scale = 5.0f;
 	m_diagonal = 0;
+	m_ripple = false;
+	m_waves = true;
 
 	
 	
@@ -95,11 +98,14 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 }
 
 
+
 void VBPlane::Tick(GameData* GD)
 {
-	
+	m_centrepoint = ((m_numVertices / 2)+(m_size / 2));
 	time = time + GD->dt;
 	Transform();
+	
+
 	if (GD->mouse->rgbButtons[0])
 	{ 
 		freq = freq + 1.0f;
@@ -118,11 +124,11 @@ void VBPlane::Tick(GameData* GD)
 	}
 	if (GD->keyboard[DIK_A] & 0x80)
 	{
-		phase = phase + 0.005f;
+		waveLength = waveLength + 0.0005f;
 	}
 	if (GD->keyboard[DIK_D] & 0x80)
 	{
-		phase = phase - 0.005f;
+		waveLength = waveLength - 0.0005f;
 	}
 	if ((GD->keyboard[DIK_LSHIFT] & 0x80) && !(GD->prevKeyboard[DIK_LSHIFT] & 0x80))
 	{
@@ -130,67 +136,90 @@ void VBPlane::Tick(GameData* GD)
 		if (m_diagonal > 3)
 			m_diagonal = 0;
 	}
+	if ((GD->keyboard[DIK_R] & 0x80) && !(GD->prevKeyboard[DIK_R] & 0x80)) //Reset to default values
+	{
+		freq = 2.0f;
+		amp = 2.5f;
+		waveLength = 0.025f;
+	}
+	if ((GD->keyboard[DIK_W] & 0x80) && !(GD->prevKeyboard[DIK_W] & 0x80))
+	{
+		m_waves = !m_waves;
+	}
+	if ((GD->keyboard[DIK_X] & 0x80) && !(GD->prevKeyboard[DIK_X] & 0x80))
+	{
+		m_ripple = !m_ripple;
+	}
+
 	
 }
 
 
+
+
 void VBPlane::Transform()
-{
-	switch (m_diagonal)
+{ 
+	for (int j = 0; j < m_numVertices; j++)
 	{
-	case 0:
-		for (int j = 0; j < m_numVertices; j++)
-		{
-			float newPos = amp * sin((freq * time) + ((m_vertices[j].Pos.x) * phase));
+		float m_wavesPos = 0.0f;
+		float m_ripplePos = 0.0f;
 
-			m_vertices[j].Pos.y = newPos;
-		}
-		break;
-	case 1:
-		for (int j = 0; j < m_numVertices; j++)
+		if (m_waves == true)
 		{
-			float newPos = amp * sin((freq * time) + ((m_vertices[j].Pos.x) * phase) + ((m_vertices[j].Pos.z) * phase));
+			switch (m_diagonal)
+			{
+			case 0:
+				
+				m_wavesPos = amp * sin((freq * time) + ((m_vertices[j].Pos.x) * waveLength));
 
-			m_vertices[j].Pos.y = newPos;
+				break;
+			case 1:
+				
+				m_wavesPos = amp * sin((freq * time) + ((m_vertices[j].Pos.x) * waveLength) + ((m_vertices[j].Pos.z) * waveLength));
+								
+				break;
+			case 2:
+				
+				m_wavesPos = amp * sin((freq * time) + ((m_vertices[j].Pos.z) * waveLength));
+				
+				break;
+			case 3:
+				
+				m_wavesPos = amp * sin((freq * time) - ((m_vertices[j].Pos.x) * waveLength) + ((m_vertices[j].Pos.z) * waveLength));
+
+				break;
+			}
 		}
-		break;
-	case 2:
-		for (int j = 0; j < m_numVertices; j++)
+		if (m_ripple == true)
 		{
-			float newPos = amp * sin((freq * time) + ((m_vertices[j].Pos.z) * phase));
+				float xDiff;
+				float zDiff;
+				float cpOffset;
+				xDiff = (m_vertices[m_centrepoint].Pos.x - m_vertices[j].Pos.x);
+				zDiff = (m_vertices[m_centrepoint].Pos.z - m_vertices[j].Pos.z);
+				cpOffset = sqrtf((zDiff*zDiff) + (xDiff*xDiff));
 
-			m_vertices[j].Pos.y = newPos;
+
+				m_ripplePos = amp * sin((freq * time) + ((cpOffset)* waveLength));
+
 		}
-		break;
-	case 3:
-		for (int j = 0; j < m_numVertices; j++)
+		
+		if (m_ripple == true && m_waves == false)
 		{
-			float newPos = amp * sin((freq * time) - ((m_vertices[j].Pos.x) * phase) + ((m_vertices[j].Pos.z) * phase));
-
-			m_vertices[j].Pos.y = newPos;
+			m_vertices[j].Pos.y = (m_ripplePos);
 		}
-		break;
+		if (m_ripple == false && m_waves == true)
+		{
+			m_vertices[j].Pos.y = (m_wavesPos);
+		}
+		if (m_ripple == true && m_waves == true)
+		{
+			m_vertices[j].Pos.y = ((m_ripplePos + m_wavesPos)/2);
+		}
 	}
 
 
-	/*if (m_diagonal == true)
-	{
-		for (int j = 0; j < m_numVertices; j++)
-		{
-			float newPos = amp * sin((freq * time) + ((m_vertices[j].Pos.x) * phase) + ((m_vertices[j].Pos.z) * phase));
-
-			m_vertices[j].Pos.y = newPos;
-		}
-	}
-	else
-	{
-		for (int j = 0; j < m_numVertices; j++)
-		{
-			float newPos = amp * sin((freq * time) + ((m_vertices[j].Pos.x) * phase));
-
-			m_vertices[j].Pos.y = newPos;
-		}
-	}*/
+	
 
 
 	//calculate the normals for the basic lighting in the base shader

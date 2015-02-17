@@ -11,11 +11,13 @@ public:
 	
 	float amp ;
 	float freq ;
-	float phase ;
+	float waveLength ;
 	float time ;
 	float m_numVertices;
 	int m_diagonal;
-	int m_
+	int m_centrepoint;
+	bool m_ripple;
+	bool m_waves;
 	
 
 	VBPlane(){};
@@ -31,7 +33,7 @@ protected:
 	//this is to allow custom versions of this which create the basic cube and then distort it
 	//see Spirla, SpikedVB and Pillow
 	virtual void Transform();
-
+	
 	int m_size;
 	myVertex* m_vertices;
 };
