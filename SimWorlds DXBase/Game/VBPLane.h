@@ -12,6 +12,9 @@ public:
 	float amp ;
 	float freq ;
 	float waveLength ;
+	float rippleAmp;
+	float rippleFreq;
+	float rippleWL;
 	float time ;
 	float m_numVertices;
 	int m_diagonal;

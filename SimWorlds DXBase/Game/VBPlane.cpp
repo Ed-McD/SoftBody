@@ -10,6 +10,9 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 	freq = 2.0f;
 	amp = 2.5f;
 	waveLength = 0.025f;
+	rippleFreq = 2.0f;
+	rippleAmp = 2.5f;
+	rippleWL = 0.025f;
 	float scale = 5.0f;
 	m_diagonal = 0;
 	m_ripple = false;
@@ -130,6 +133,30 @@ void VBPlane::Tick(GameData* GD)
 	{
 		waveLength = waveLength - 0.0005f;
 	}
+	if (GD->keyboard[DIK_U] & 0x80)
+	{
+		rippleFreq = rippleFreq + 1.0f;
+	}
+	if (GD->keyboard[DIK_I] & 0x80)
+	{
+		rippleFreq = rippleFreq - 1.0f;
+	}
+	if (GD->keyboard[DIK_J] & 0x80)
+	{
+		rippleAmp = rippleAmp + 1.0f;
+	}
+	if (GD->keyboard[DIK_K] & 0x80)
+	{
+		rippleAmp = rippleAmp - 1.0f;
+	}
+	if (GD->keyboard[DIK_N] & 0x80)
+	{
+		rippleWL = rippleWL + 0.0005f;
+	}
+	if (GD->keyboard[DIK_M] & 0x80)
+	{
+		rippleWL = rippleWL - 0.0005f;
+	}
 	if ((GD->keyboard[DIK_LSHIFT] & 0x80) && !(GD->prevKeyboard[DIK_LSHIFT] & 0x80))
 	{
  		m_diagonal ++;
@@ -200,7 +227,7 @@ void VBPlane::Transform()
 				cpOffset = sqrtf((zDiff*zDiff) + (xDiff*xDiff));
 
 
-				m_ripplePos = amp * sin((freq * time) + ((cpOffset)* waveLength));
+				m_ripplePos = rippleAmp * sin((rippleFreq * time) + ((cpOffset)* rippleWL));
 
 		}
 		
