@@ -129,11 +129,11 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;DEBUG;PROFILE;_WINDOWS;_WIN32_WINNT=0x0600;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <AdditionalIncludeDirectories>..\Inc;..\DXUT\Core;..\DXUT\Optional</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Inc;..\DXUT\Core;..\DXUT\Optional;..\External\AntTweakBar\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalOptions> %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;DirectXTK.lib;%(AdditionalDependencies);DXUT.lib;DXUTOpt.lib;usp10.lib;dinput8.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;DirectXTK.lib;%(AdditionalDependencies);DXUT.lib;DXUTOpt.lib;usp10.lib;dinput8.lib;AntTweakBar.lib;AntTweakBar64.lib</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <LargeAddressAware>true</LargeAddressAware>
@@ -142,6 +142,7 @@
       <TargetMachine>MachineX86</TargetMachine>
       <UACExecutionLevel>AsInvoker</UACExecutionLevel>
       <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
+      <AdditionalLibraryDirectories>..\External\AntTweakBar\lib</AdditionalLibraryDirectories>
     </Link>
     <Manifest>
       <EnableDPIAwareness>true</EnableDPIAwareness>
@@ -370,6 +371,7 @@
     <ClCompile Include="VBPlane.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AntTweakTest.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="CMOGO.h" />
     <ClInclude Include="ConstantBuffer.h" />
