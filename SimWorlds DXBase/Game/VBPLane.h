@@ -39,6 +39,7 @@ protected:
 	
 	int m_size;
 	myVertex* m_vertices;
+
 };
 
 #endif

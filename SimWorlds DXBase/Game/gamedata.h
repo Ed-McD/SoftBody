@@ -2,6 +2,10 @@
 #define _GAME_DATA_H_
 #include "gamestate.h"
 #include <dinput.h>
+#include "SimpleMath.h"
+
+using namespace DirectX;
+using namespace SimpleMath;
 
 struct GameData
 {
@@ -10,6 +14,7 @@ struct GameData
 	unsigned char* prevKeyboard; //previous frame's keyboard state
 	DIMOUSESTATE* mouse; //current mouse state
 	GameState GS; //current game state
+	Vector3 playerPos;
 };
 
 #endif

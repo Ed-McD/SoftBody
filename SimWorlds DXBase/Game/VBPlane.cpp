@@ -1,7 +1,8 @@
 #include "gamedata.h"
 #include "VBPLane.h"
 #include "drawdata.h"
-#
+#include "Turret_base.h"
+
 
 void VBPlane::init(int _size, ID3D11Device* GD)
 {
@@ -97,6 +98,8 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 	BuildIB(GD, indices);
 	BuildDVB(GD, numVerts, m_vertices);
 
+	m_centrepoint = ((m_numVertices / 2) + (m_size / 2));
+
 	//delete[] m_vertices; //this is no longer needed as this is now in the Vertex Buffer
 }
 
@@ -104,9 +107,37 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 
 void VBPlane::Tick(GameData* GD)
 {
-	m_centrepoint = ((m_numVertices / 2)+(m_size / 2));
+	if ((GD->keyboard[DIK_RETURN] & 0x80) && !(GD->prevKeyboard[DIK_RETURN] & 0x80))
+	{
+
+
+		for (int j = 0; j < m_numVertices; j++)
+		{
+			float xDiff;
+			float zDiff;
+			float playerPosOffset;
+			xDiff = (GD->playerPos.x - m_vertices[j].Pos.x);
+			zDiff = (GD->playerPos.z - m_vertices[j].Pos.z);
+			playerPosOffset = sqrtf((zDiff*zDiff) + (xDiff*xDiff));
+
+			float cpxDiff;
+			float cpzDiff;
+			float cpOffset;
+			cpxDiff = (m_vertices[m_centrepoint].Pos.x - GD->playerPos.x);
+			cpzDiff = (m_vertices[m_centrepoint].Pos.z - GD->playerPos.z);
+			cpOffset = sqrtf((cpzDiff*cpzDiff) + (cpxDiff*cpxDiff));
+
+			if (playerPosOffset < cpOffset);
+			{
+				m_centrepoint = j;
+			}
+		}
+
+	}
+	
 	time = time + GD->dt;
 	Transform();
+	
 	
 
 	if (GD->mouse->rgbButtons[0])
@@ -168,6 +199,9 @@ void VBPlane::Tick(GameData* GD)
 		freq = 2.0f;
 		amp = 2.5f;
 		waveLength = 0.025f;
+		rippleFreq = 2.0f;
+		rippleAmp = 2.5f;
+		rippleWL = 0.025f;
 	}
 	if ((GD->keyboard[DIK_W] & 0x80) && !(GD->prevKeyboard[DIK_W] & 0x80))
 	{
@@ -267,7 +301,7 @@ void VBPlane::Transform()
 		m_vertices[V2].Norm = norm;
 		m_vertices[V3].Norm = norm;
 	}
-
+	
 
 
 
