@@ -10,6 +10,7 @@
 #include "DDSTextureLoader.h"
 #include "drawdata.h"
 #include "DrawData2D.h"
+#include "AntTweakTest.h"
 
 using namespace DirectX;
 
@@ -19,6 +20,9 @@ Game::Game(ID3D11Device* _pd3dDevice, HINSTANCE _hInstance) :m_playTime(0), m_my
 {
 	/* initialize random seed: */
 	srand(time(NULL));
+
+	TwInit(TW_DIRECT3D11,_pd3dDevice);
+	TwWindowSize(menuWidth, menuHeight);
 
 	m_pKeyboard = nullptr;
 	m_pDirectInput = nullptr;
@@ -51,6 +55,9 @@ Game::Game(ID3D11Device* _pd3dDevice, HINSTANCE _hInstance) :m_playTime(0), m_my
 	m_GD->prevKeyboard = m_prevKeyboardState;
 	m_GD->mouse = &m_mouse_state;
 	m_GD->GS = GS_PLAY_TPS_CAM;
+
+	TwBar *myBar;
+	myBar = TwNewBar("Variable Menu");
 
 	//create a base camera
 	m_cam = new Camera(0.4f * XM_PI, 640.0f / 480.0f, 1.0f, 10000.0f, Vector3::Zero, Vector3::UnitY);
@@ -255,6 +262,8 @@ void Game::render(ID3D11DeviceContext* _pd3dImmediateContext)
 	}
 	m_DD2D->m_Font->DrawString(m_DD2D->m_Sprites.get(), Helper::charToWChar(attempt.c_str()), Vector2(100, 10), Colors::Yellow);
 	m_DD2D->m_Sprites->End();
+	
+	TwDraw();
 
 	_pd3dImmediateContext->OMSetDepthStencilState(m_States->DepthDefault(), 0);
 

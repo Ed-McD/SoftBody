@@ -15,7 +15,8 @@ public:
 	float rippleAmp;
 	float rippleFreq;
 	float rippleWL;
-	float time ;
+	float rippleFalloff;
+	float time;
 	float m_numVertices;
 	int m_diagonal;
 	int m_centrepoint;

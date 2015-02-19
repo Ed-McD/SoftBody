@@ -14,6 +14,7 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 	rippleFreq = 2.0f;
 	rippleAmp = 2.5f;
 	rippleWL = 0.025f;
+	rippleFalloff = 0.75f;
 	float scale = 5.0f;
 	m_diagonal = 0;
 	m_ripple = false;
@@ -253,15 +254,17 @@ void VBPlane::Transform()
 		}
 		if (m_ripple == true)
 		{
-				float xDiff;
-				float zDiff;
-				float cpOffset;
-				xDiff = (m_vertices[m_centrepoint].Pos.x - m_vertices[j].Pos.x);
-				zDiff = (m_vertices[m_centrepoint].Pos.z - m_vertices[j].Pos.z);
-				cpOffset = sqrtf((zDiff*zDiff) + (xDiff*xDiff));
+			float newAmp;
+			float xDiff;
+			float zDiff;
+			float cpOffset;
+			xDiff = (m_vertices[m_centrepoint].Pos.x - m_vertices[j].Pos.x);
+			zDiff = (m_vertices[m_centrepoint].Pos.z - m_vertices[j].Pos.z);
+			cpOffset = sqrtf((zDiff*zDiff) + (xDiff*xDiff));
+			
+			newAmp = (rippleAmp *(1-(cpOffset/600)));
 
-
-				m_ripplePos = rippleAmp * sin((rippleFreq * time) + ((cpOffset)* rippleWL));
+			m_ripplePos = newAmp * sin((rippleFreq * time) + ((cpOffset)* rippleWL));
 
 		}
 		

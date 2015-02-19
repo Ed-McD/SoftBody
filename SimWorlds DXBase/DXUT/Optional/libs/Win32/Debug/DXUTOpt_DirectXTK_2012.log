@@ -1,27 +1,9 @@
-﻿Build started 18/02/2015 17:31:54.
-     1>Project "D:\simplaneexe\SoftBody\SimWorlds DXBase\DXUT\Optional\DXUTOpt_DirectXTK_2012.vcxproj" on node 4 (Build target(s)).
-     1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\..\Inc /I..\Core\ /ZI /nologo /W4 /WX- /Od /Oi /Oy- /D WIN32 /D _DEBUG /D DEBUG /D PROFILE /D _WINDOWS /D _LIB /D USE_DIRECTXTK /D _WIN32_WINNT=0x0600 /D _UNICODE /D UNICODE /Gm- /EHsc /RTC1 /MDd /GS /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /openmp- /Yc"DXUT.h" /Fp"libs\Win32\Debug\DXUTOpt.pch" /Fo"libs\Win32\Debug\\" /Fd"libs\Win32\Debug\DXUTOpt.pdb" /Gd /TP /analyze- /errorReport:prompt  DXUTres.cpp
-         DXUTres.cpp
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\..\Inc /I..\Core\ /ZI /nologo /W4 /WX- /Od /Oi /Oy- /D WIN32 /D _DEBUG /D DEBUG /D PROFILE /D _WINDOWS /D _LIB /D USE_DIRECTXTK /D _WIN32_WINNT=0x0600 /D _UNICODE /D UNICODE /Gm- /EHsc /RTC1 /MDd /GS /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /openmp- /Yu"DXUT.h" /Fp"libs\Win32\Debug\DXUTOpt.pch" /Fo"libs\Win32\Debug\\" /Fd"libs\Win32\Debug\DXUTOpt.pdb" /Gd /TP /analyze- /errorReport:prompt  DXUTcamera.cpp DXUTgui.cpp DXUTguiIME.cpp DXUTsettingsdlg.cpp ImeUi.cpp SDKmisc.cpp
-         DXUTcamera.cpp
-         DXUTgui.cpp
-         DXUTguiIME.cpp
-         DXUTsettingsdlg.cpp
-         ImeUi.cpp
-         SDKmisc.cpp
-         Generating Code...
-       Lib:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:"..\..\libs\Win32\Debug\DXUTOpt.lib" /NOLOGO libs\Win32\Debug\DXUTcamera.obj
-         libs\Win32\Debug\DXUTgui.obj
-         libs\Win32\Debug\DXUTguiIME.obj
-         libs\Win32\Debug\DXUTres.obj
-         libs\Win32\Debug\DXUTsettingsdlg.obj
-         libs\Win32\Debug\ImeUi.obj
-         libs\Win32\Debug\SDKmisc.obj
+﻿Build started 19/02/2015 12:16:17.
+     1>Project "D:\simplaneexe\SoftBody\SimWorlds DXBase\DXUT\Optional\DXUTOpt_DirectXTK_2012.vcxproj" on node 5 (Build target(s)).
+     1>Lib:
          DXUTOpt_DirectXTK_2012.vcxproj -> D:\simplaneexe\SoftBody\SimWorlds DXBase\DXUT\Optional\..\..\libs\Win32\Debug\DXUTOpt.lib
      1>Done Building Project "D:\simplaneexe\SoftBody\SimWorlds DXBase\DXUT\Optional\DXUTOpt_DirectXTK_2012.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:02.59
+Time Elapsed 00:00:00.06
