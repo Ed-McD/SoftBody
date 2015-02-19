@@ -1,24 +1,22 @@
-﻿Build started 19/02/2015 12:51:10.
+﻿Build started 19/02/2015 18:14:39.
      1>Project "D:\simplaneexe\SoftBody\SimWorlds DXBase\Game\Tutorial01.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\Inc /I..\DXUT\Core /I..\DXUT\Optional /I..\External\AntTweakBar\include /ZI /nologo /W4 /WX- /Od /Oi /Oy- /D WIN32 /D _DEBUG /D DEBUG /D PROFILE /D _WINDOWS /D _WIN32_WINNT=0x0600 /D _UNICODE /D UNICODE /Gm- /EHsc /RTC1 /MDd /GS /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /openmp- /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt  VBPlane.cpp
-         VBPlane.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\Inc /I..\DXUT\Core /I..\DXUT\Optional /I..\External\AntTweakBar\include /ZI /nologo /W4 /WX- /Od /Oi /Oy- /D WIN32 /D _DEBUG /D DEBUG /D PROFILE /D _WINDOWS /D _WIN32_WINNT=0x0600 /D _UNICODE /D UNICODE /Gm- /EHsc /RTC1 /MDd /GS /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /openmp- /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt  game.cpp
+         game.cpp
          c:\program files (x86)\windows kits\8.1\include\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+     1>d:\simplaneexe\softbody\simworlds dxbase\game\gameobject2d.h(11): warning C4099: 'GameData' : type name first seen using 'struct' now seen using 'class'
+                 d:\simplaneexe\softbody\simworlds dxbase\game\game.h(22) : see declaration of 'GameData'
+     1>d:\simplaneexe\softbody\simworlds dxbase\game\terrain.h(14): warning C4100: 'GD' : unreferenced formal parameter
      1>d:\simplaneexe\softbody\simworlds dxbase\game\constantbuffer.h(23): warning C4324: 'ConstantBuffer' : structure was padded due to __declspec(align())
-     1>d:\simplaneexe\softbody\simworlds dxbase\game\vbplane.cpp(29): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
-     1>d:\simplaneexe\softbody\simworlds dxbase\game\vbplane.cpp(38): warning C4244: '=' : conversion from 'int' to 'WORD', possible loss of data
-     1>d:\simplaneexe\softbody\simworlds dxbase\game\vbplane.cpp(66): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\simplaneexe\softbody\simworlds dxbase\game\vbplane.cpp(80): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\simplaneexe\softbody\simworlds dxbase\game\vbplane.cpp(82): warning C4244: 'initializing' : conversion from 'int' to 'WORD', possible loss of data
-     1>d:\simplaneexe\softbody\simworlds dxbase\game\vbplane.cpp(83): warning C4244: 'initializing' : conversion from 'int' to 'WORD', possible loss of data
-     1>d:\simplaneexe\softbody\simworlds dxbase\game\vbplane.cpp(84): warning C4244: 'initializing' : conversion from 'int' to 'WORD', possible loss of data
-     1>d:\simplaneexe\softbody\simworlds dxbase\game\vbplane.cpp(102): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
-     1>d:\simplaneexe\softbody\simworlds dxbase\game\vbplane.cpp(132): warning C4390: ';' : empty controlled statement found; is this the intent?
-     1>d:\simplaneexe\softbody\simworlds dxbase\game\vbplane.cpp(290): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\simplaneexe\softbody\simworlds dxbase\game\vbplane.cpp(292): warning C4244: 'initializing' : conversion from 'int' to 'WORD', possible loss of data
-     1>d:\simplaneexe\softbody\simworlds dxbase\game\vbplane.cpp(293): warning C4244: 'initializing' : conversion from 'int' to 'WORD', possible loss of data
-     1>d:\simplaneexe\softbody\simworlds dxbase\game\vbplane.cpp(294): warning C4244: 'initializing' : conversion from 'int' to 'WORD', possible loss of data
-     1>d:\simplaneexe\softbody\simworlds dxbase\game\vbplane.cpp(350): warning C4244: 'argument' : conversion from 'float' to 'size_t', possible loss of data
+     1>d:\simplaneexe\softbody\simworlds dxbase\game\spikedvb.h(14): warning C4018: '<' : signed/unsigned mismatch
+     1>d:\simplaneexe\softbody\simworlds dxbase\game\spiral.h(13): warning C4018: '<' : signed/unsigned mismatch
+     1>d:\simplaneexe\softbody\simworlds dxbase\game\pillow.h(15): warning C4018: '<' : signed/unsigned mismatch
+     1>d:\simplaneexe\softbody\simworlds dxbase\game\pillow.h(25): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>d:\simplaneexe\softbody\simworlds dxbase\game\helper.h(16): warning C4996: 'mbstowcs': This function or variable may be unsafe. Consider using mbstowcs_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\stdlib.h(528) : see declaration of 'mbstowcs'
+     1>d:\simplaneexe\softbody\simworlds dxbase\game\game.cpp(22): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
+     1>d:\simplaneexe\softbody\simworlds dxbase\game\game.cpp(254): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _itoa. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\stdlib.h(937) : see declaration of 'itoa'
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\simplaneexe\SoftBody\SimWorlds DXBase\Debug\Game.exe" /INCREMENTAL /NOLOGO /LIBPATH:..\External\AntTweakBar\lib d3d11.lib d3dcompiler.lib dxguid.lib winmm.lib comctl32.lib DirectXTK.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib DXUT.lib DXUTOpt.lib usp10.lib dinput8.lib AntTweakBar.lib AntTweakBar64.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\Include\Manifest\dpiaware.manifest" /DEBUG /PDB:"D:\simplaneexe\SoftBody\SimWorlds DXBase\Debug\Game.pdb" /SUBSYSTEM:WINDOWS /LARGEADDRESSAWARE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\simplaneexe\SoftBody\SimWorlds DXBase\Debug\Game.lib" /MACHINE:X86 /SAFESEH  Debug\Tutorial01.res
          Debug\camera.obj
@@ -28,6 +26,7 @@
          Debug\gameobject.obj
          Debug\GameObject2D.obj
          Debug\light.obj
+         Debug\Ripple.obj
          Debug\snail.obj
          Debug\terrain.obj
          Debug\tpscamera.obj
@@ -41,4 +40,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.03
+Time Elapsed 00:00:02.05

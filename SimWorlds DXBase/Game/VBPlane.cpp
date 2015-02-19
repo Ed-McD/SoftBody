@@ -19,6 +19,8 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 	m_diagonal = 0;
 	m_ripple = false;
 	m_waves = true;
+	rippleCount = 0;
+	useRippleClass = false;
 
 	
 	
@@ -133,10 +135,18 @@ void VBPlane::Tick(GameData* GD)
 				m_centrepoint = j;
 			}
 		}
+		if (useRippleClass)
+		{
+			//create a new ripple with different origin.
+			myRipples.push_back(new Ripple(rippleAmp, rippleFreq, rippleWL, m_vertices[m_centrepoint].Pos.x, m_vertices[m_centrepoint].Pos.z));
+			rippleCount++;
+		}
+		
 
 	}
 	
 	time = time + GD->dt;
+	m_dt = GD->dt;
 	Transform();
 	
 	
@@ -226,7 +236,7 @@ void VBPlane::Transform()
 		float m_wavesPos = 0.0f;
 		float m_ripplePos = 0.0f;
 
-		if (m_waves == true)
+		if (m_waves)
 		{
 			switch (m_diagonal)
 			{
@@ -252,20 +262,34 @@ void VBPlane::Transform()
 				break;
 			}
 		}
-		if (m_ripple == true)
+		
+		if (m_ripple)
 		{
-			float newAmp;
-			float xDiff;
-			float zDiff;
-			float cpOffset;
-			xDiff = (m_vertices[m_centrepoint].Pos.x - m_vertices[j].Pos.x);
-			zDiff = (m_vertices[m_centrepoint].Pos.z - m_vertices[j].Pos.z);
-			cpOffset = sqrtf((zDiff*zDiff) + (xDiff*xDiff));
-			
-			newAmp = (rippleAmp *(1-(cpOffset/600)));
+			if (useRippleClass)
+			{
+				for (list<Ripple *>::iterator it = myRipples.begin(); it != myRipples.end(); it++)
+				{
+					m_ripplePos += (*it)->Calculate(m_dt, m_vertices[j].Pos.x, m_vertices[j].Pos.z);
 
-			m_ripplePos = newAmp * sin((rippleFreq * time) + ((cpOffset)* rippleWL));
+				}
+				m_vertices[j].Pos.y = (m_wavesPos+ m_ripplePos) / (rippleCount +1);
 
+			}
+			else
+			{
+				float newAmp;
+				float xDiff;
+				float zDiff;
+				float cpOffset;
+				xDiff = (m_vertices[m_centrepoint].Pos.x - m_vertices[j].Pos.x);
+				zDiff = (m_vertices[m_centrepoint].Pos.z - m_vertices[j].Pos.z);
+				cpOffset = sqrtf((zDiff*zDiff) + (xDiff*xDiff));
+
+				newAmp = (rippleAmp *(1 - (cpOffset / 600)));
+
+				m_ripplePos = newAmp * sin((rippleFreq * time) + ((cpOffset)* rippleWL));
+
+			}
 		}
 		
 		if (m_ripple == true && m_waves == false)
@@ -278,7 +302,14 @@ void VBPlane::Transform()
 		}
 		if (m_ripple == true && m_waves == true)
 		{
-			m_vertices[j].Pos.y = ((m_ripplePos + m_wavesPos)/2);
+			if (useRippleClass)
+			{
+				m_vertices[j].Pos.y = (m_wavesPos + m_ripplePos) / (rippleCount + 1);
+			}
+			else
+			{
+				m_vertices[j].Pos.y = ((m_ripplePos + m_wavesPos)/2);
+			}			
 		}
 	}
 

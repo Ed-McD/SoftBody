@@ -361,6 +361,7 @@
     <ClCompile Include="gameobject.cpp" />
     <ClCompile Include="GameObject2D.cpp" />
     <ClCompile Include="light.cpp" />
+    <ClCompile Include="Ripple.cpp" />
     <ClCompile Include="snail.cpp" />
     <ClCompile Include="terrain.cpp" />
     <ClCompile Include="tpscamera.cpp" />
@@ -389,6 +390,7 @@
     <ClInclude Include="ObjectList.h" />
     <ClInclude Include="pillow.h" />
     <CLInclude Include="resource.h" />
+    <ClInclude Include="Ripple.h" />
     <ClInclude Include="snail.h" />
     <ClInclude Include="SpikedVB.h" />
     <ClInclude Include="spiral.h" />
