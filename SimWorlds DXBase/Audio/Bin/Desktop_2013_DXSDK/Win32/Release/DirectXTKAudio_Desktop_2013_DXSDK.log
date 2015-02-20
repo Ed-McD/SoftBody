@@ -1,0 +1,11 @@
+﻿Build started 20/02/2015 14:03:54.
+     1>Project "D:\SoftBody\SimWorlds DXBase\Audio\DirectXTKAudio_Desktop_2013_DXSDK.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\Inc /I..\Src /Zi /nologo /W4 /WX- /O2 /Oi /Oy- /GL /D _WIN32_WINNT=0x0600 /D WIN32 /D NDEBUG /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /Yc"pch.h" /Fp"Bin\Desktop_2013_DXSDK\Win32\Release\DirectXTKAudioDX.pch" /Fo"Bin\Desktop_2013_DXSDK\Win32\Release\\" /Fd"Bin\Desktop_2013_DXSDK\Win32\Release\DirectXTKAudioDX.pdb" /Gd /TP /analyze- /errorReport:prompt AudioEngine.cpp
+         AudioEngine.cpp
+     1>D:\SoftBody\SimWorlds DXBase\Inc\Audio.h(42): fatal error C1083: Cannot open include file: 'C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\comdecl.h': No such file or directory
+     1>Done Building Project "D:\SoftBody\SimWorlds DXBase\Audio\DirectXTKAudio_Desktop_2013_DXSDK.vcxproj" (Build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:01.18

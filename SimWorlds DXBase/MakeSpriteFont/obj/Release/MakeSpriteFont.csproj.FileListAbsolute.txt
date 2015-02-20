@@ -1,0 +1,5 @@
+D:\SoftBody\SimWorlds DXBase\MakeSpriteFont\bin\Release\MakeSpriteFont.exe
+D:\SoftBody\SimWorlds DXBase\MakeSpriteFont\bin\Release\MakeSpriteFont.pdb
+D:\SoftBody\SimWorlds DXBase\MakeSpriteFont\obj\Release\MakeSpriteFont.csprojResolveAssemblyReference.cache
+D:\SoftBody\SimWorlds DXBase\MakeSpriteFont\obj\Release\MakeSpriteFont.exe
+D:\SoftBody\SimWorlds DXBase\MakeSpriteFont\obj\Release\MakeSpriteFont.pdb

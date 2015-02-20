@@ -1,0 +1,20 @@
+﻿Build started 20/02/2015 13:57:19.
+     1>Project "D:\SoftBody\SimWorlds DXBase\DXUT\Core\DXUT_DirectXTK_2012.vcxproj" on node 3 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\..\Inc /Zi /nologo /W4 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _LIB /D USE_DIRECTXTK /D _WIN32_WINNT=0x0600 /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /openmp- /Yc"DXUT.h" /Fp"libs\Win32\Release\DXUT.pch" /Fo"libs\Win32\Release\\" /Fd"libs\Win32\Release\DXUT.pdb" /Gd /TP /analyze- /errorReport:prompt  DXUT.cpp
+         DXUT.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\..\Inc /Zi /nologo /W4 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _LIB /D USE_DIRECTXTK /D _WIN32_WINNT=0x0600 /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /openmp- /Yu"DXUT.h" /Fp"libs\Win32\Release\DXUT.pch" /Fo"libs\Win32\Release\\" /Fd"libs\Win32\Release\DXUT.pdb" /Gd /TP /analyze- /errorReport:prompt  DXUTDevice11.cpp DXUTmisc.cpp DXErr.cpp
+         DXUTDevice11.cpp
+         DXUTmisc.cpp
+         DXErr.cpp
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:"..\..\libs\Win32\Release\DXUT.lib" /NOLOGO /LTCG libs\Win32\Release\DXUT.obj
+         libs\Win32\Release\DXUTDevice11.obj
+         libs\Win32\Release\DXUTmisc.obj
+         libs\Win32\Release\DXErr.obj
+         DXUT_DirectXTK_2012.vcxproj -> D:\SoftBody\SimWorlds DXBase\DXUT\Core\..\..\libs\Win32\Release\DXUT.lib
+     1>Done Building Project "D:\SoftBody\SimWorlds DXBase\DXUT\Core\DXUT_DirectXTK_2012.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:02.65
