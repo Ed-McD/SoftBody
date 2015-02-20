@@ -1,5 +1,5 @@
-﻿Build started 20/02/2015 13:57:19.
-     1>Project "D:\SoftBody\SimWorlds DXBase\Assets\Assets.vcxproj" on node 5 (Build target(s)).
+﻿Build started 20/02/2015 17:36:19.
+     1>Project "D:\SoftBody\SimWorlds DXBase\Assets\Assets.vcxproj" on node 2 (Build target(s)).
      1>_ImageContentTask:
          grass.jpg
          white.jpg
@@ -11,4 +11,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.46
+Time Elapsed 00:00:00.96

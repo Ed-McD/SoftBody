@@ -11,9 +11,9 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 	freq = 2.0f;
 	amp = 2.5f;
 	waveLength = 0.025f;
-	rippleFreq = -2.0f;
+	rippleFreq = 10.0f;
 	rippleAmp = 10.0f;
-	rippleWL = 0.025f;
+	rippleWL = 0.2f;
 	rippleFalloff = 0.75f;
 	float scale = 5.0f;
 	m_diagonal = 0;
@@ -146,8 +146,13 @@ void VBPlane::Tick(GameData* GD)
 
 	}
 	
+	for (list<Ripple *>::iterator it = myRipples.begin(); it != myRipples.end(); it++)
+	{
+
+		(*it)->m_time += m_dt;
+
+	}
 	time = time + GD->dt;
-	m_dt = GD->dt;
 	Transform();
 	
 	
@@ -271,7 +276,7 @@ void VBPlane::Transform()
 				for (list<Ripple *>::iterator it = myRipples.begin(); it != myRipples.end(); it++)
 				{
 					
-					m_ripplePos += (*it)->Calculate(time, m_vertices[j].Pos.x, m_vertices[j].Pos.z);
+					m_ripplePos += (*it)->Calculate(m_vertices[j].Pos.x, m_vertices[j].Pos.z);
 
 				}
 				m_vertices[j].Pos.y = (m_wavesPos+ m_ripplePos) / (rippleCount +1);

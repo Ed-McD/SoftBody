@@ -8,7 +8,7 @@ public:
 	Ripple(float _RA, float _RF, float _RWL, float _CPX, float _CPZ);
 	~Ripple(){};
 	
-	float Calculate(float _dt, float vertX, float vertZ);
+	float Calculate(float vertX, float vertZ);
 	float m_initAmp;
 	float m_initFreq;
 	float m_initWL;

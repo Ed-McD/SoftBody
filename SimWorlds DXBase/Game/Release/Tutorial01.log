@@ -1,4 +1,4 @@
-﻿Build started 20/02/2015 14:21:18.
+﻿Build started 20/02/2015 17:49:37.
      1>Project "D:\SoftBody\SimWorlds DXBase\Game\Tutorial01.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\Inc /I..\DXUT\Core /I..\DXUT\Optional /I..\External\AntTweakBar\include /Zi /nologo /W4 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _WIN32_WINNT=0x0600 /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /openmp- /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt  VBPlane.cpp
@@ -14,11 +14,11 @@
      1>VBPlane.cpp(86): warning C4244: 'initializing' : conversion from 'int' to 'WORD', possible loss of data
      1>VBPlane.cpp(104): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
      1>VBPlane.cpp(134): warning C4390: ';' : empty controlled statement found; is this the intent?
-     1>VBPlane.cpp(323): warning C4018: '<' : signed/unsigned mismatch
-     1>VBPlane.cpp(325): warning C4244: 'initializing' : conversion from 'int' to 'WORD', possible loss of data
-     1>VBPlane.cpp(326): warning C4244: 'initializing' : conversion from 'int' to 'WORD', possible loss of data
-     1>VBPlane.cpp(327): warning C4244: 'initializing' : conversion from 'int' to 'WORD', possible loss of data
-     1>VBPlane.cpp(383): warning C4244: 'argument' : conversion from 'float' to 'size_t', possible loss of data
+     1>VBPlane.cpp(328): warning C4018: '<' : signed/unsigned mismatch
+     1>VBPlane.cpp(330): warning C4244: 'initializing' : conversion from 'int' to 'WORD', possible loss of data
+     1>VBPlane.cpp(331): warning C4244: 'initializing' : conversion from 'int' to 'WORD', possible loss of data
+     1>VBPlane.cpp(332): warning C4244: 'initializing' : conversion from 'int' to 'WORD', possible loss of data
+     1>VBPlane.cpp(388): warning C4244: 'argument' : conversion from 'float' to 'size_t', possible loss of data
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\SoftBody\SimWorlds DXBase\Release\Game.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:..\External\AntTweakBar\lib d3d11.lib d3dcompiler.lib dxguid.lib winmm.lib comctl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib DirectXTK.lib DXUT.lib DXUTOpt.lib usp10.lib dinput8.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\Include\Manifest\dpiaware.manifest" /DEBUG /PDB:"D:\SoftBody\SimWorlds DXBase\Release\Game.pdb" /SUBSYSTEM:WINDOWS /LARGEADDRESSAWARE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\SoftBody\SimWorlds DXBase\Release\Game.lib" /MACHINE:X86 /SAFESEH  Release\Tutorial01.res
          Release\camera.obj
@@ -44,4 +44,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:05.24
+Time Elapsed 00:00:05.49
