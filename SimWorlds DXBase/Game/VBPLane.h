@@ -30,6 +30,7 @@ public:
 	int rippleCount= 0;
 	bool m_ripple;
 	bool m_waves;
+	bool useSinSim;
 	bool useRippleClass;
 
 	list <Ripple*> myRipples;
@@ -46,7 +47,7 @@ public:
 protected:
 	//this is to allow custom versions of this which create the basic cube and then distort it
 	//see Spirla, SpikedVB and Pillow
-	virtual void Transform();
+	virtual void TransformSin();
 	
 	int m_size;
 	myVertex* m_vertices;	

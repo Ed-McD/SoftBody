@@ -11,9 +11,9 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 	freq = 2.0f;
 	amp = 2.5f;
 	waveLength = 0.025f;
-	rippleFreq = 10.0f;
-	rippleAmp = 10.0f;
-	rippleWL = 0.2f;
+	rippleFreq = 20.0f;
+	rippleAmp = 15.0f;
+	rippleWL = 0.1f;
 	rippleFalloff = 0.75f;
 	float scale = 5.0f;
 	m_diagonal = 0;
@@ -21,6 +21,7 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 	m_waves = true;
 	rippleCount = 0;
 	useRippleClass = true;
+	useSinSim = false;
 
 	
 	
@@ -101,7 +102,6 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 	BuildIB(GD, indices);
 	BuildDVB(GD, numVerts, m_vertices);
 
-	m_centrepoint = ((m_numVertices / 2) + (m_size / 2));
 
 	//delete[] m_vertices; //this is no longer needed as this is now in the Vertex Buffer
 }
@@ -110,132 +110,141 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 
 void VBPlane::Tick(GameData* GD)
 {
-	if ((GD->keyboard[DIK_RETURN] & 0x80) && !(GD->prevKeyboard[DIK_RETURN] & 0x80))
+	if (useSinSim) //tick for if the sin function based simulation is being used;
 	{
 
-
-		for (int j = 0; j < m_numVertices; j++)
+		if ((GD->keyboard[DIK_RETURN] & 0x80) && !(GD->prevKeyboard[DIK_RETURN] & 0x80))
 		{
-			float xDiff;
-			float zDiff;
-			float playerPosOffset;
-			xDiff = (GD->playerPos.x - m_vertices[j].Pos.x);
-			zDiff = (GD->playerPos.z - m_vertices[j].Pos.z);
-			playerPosOffset = sqrtf((zDiff*zDiff) + (xDiff*xDiff));
 
-			float cpxDiff;
-			float cpzDiff;
-			float cpOffset;
-			cpxDiff = (m_vertices[m_centrepoint].Pos.x - GD->playerPos.x);
-			cpzDiff = (m_vertices[m_centrepoint].Pos.z - GD->playerPos.z);
-			cpOffset = sqrtf((cpzDiff*cpzDiff) + (cpxDiff*cpxDiff));
 
-			if (playerPosOffset < cpOffset);
+			for (int j = 0; j < m_numVertices; j++)
 			{
-				m_centrepoint = j;
+				float xDiff;
+				float zDiff;
+				float playerPosOffset;
+				xDiff = (GD->playerPos.x - m_vertices[j].Pos.x);
+				zDiff = (GD->playerPos.z - m_vertices[j].Pos.z);
+				playerPosOffset = sqrtf((zDiff*zDiff) + (xDiff*xDiff));
+
+				float cpxDiff;
+				float cpzDiff;
+				float cpOffset;
+				cpxDiff = (m_vertices[m_centrepoint].Pos.x - GD->playerPos.x);
+				cpzDiff = (m_vertices[m_centrepoint].Pos.z - GD->playerPos.z);
+				cpOffset = sqrtf((cpzDiff*cpzDiff) + (cpxDiff*cpxDiff));
+
+				if (playerPosOffset < cpOffset);
+				{
+					m_centrepoint = j;
+				}
 			}
+			if (useRippleClass)
+			{
+				m_centrepoint = rand() % (100000);
+				//create a new ripple with different origin.
+				myRipples.push_back(new Ripple(rippleAmp, rippleFreq, rippleWL, m_vertices[m_centrepoint].Pos.x, m_vertices[m_centrepoint].Pos.z));
+				rippleCount++;
+			}
+
+
 		}
-		if (useRippleClass)
+
+		for (list<Ripple *>::iterator it = myRipples.begin(); it != myRipples.end(); it++)
 		{
-			m_centrepoint = rand() % (100000);
-			//create a new ripple with different origin.
-			myRipples.push_back(new Ripple(rippleAmp, rippleFreq, rippleWL, m_vertices[m_centrepoint].Pos.x, m_vertices[m_centrepoint].Pos.z));
-			rippleCount++;
+
+			(*it)->m_time += m_dt;
+			(*it)->m_initAmp -= 0.01f;
+			if ((*it)->m_initAmp < 0.0f)
+			{
+
+				delete (*it);
+				it = myRipples.erase(it);
+			}
+
 		}
-		
+		time = time + GD->dt;
+		TransformSin();
 
-	}
-	
-	for (list<Ripple *>::iterator it = myRipples.begin(); it != myRipples.end(); it++)
-	{
 
-		(*it)->m_time += m_dt;
 
-	}
-	time = time + GD->dt;
-	Transform();
-	
-	
-
-	if (GD->mouse->rgbButtons[0])
-	{ 
-		freq = freq + 1.0f;
-	}
-	if (GD->mouse->rgbButtons[1])
-	{
-		freq = freq - 1.0f;
-	}
-	if (GD->keyboard[DIK_Q] & 0x80)
-	{
-		amp = amp + 1.0f;
-	}
-	if (GD->keyboard[DIK_E] & 0x80)
-	{
-		amp = amp - 1.0f;
-	}
-	if (GD->keyboard[DIK_A] & 0x80)
-	{
-		waveLength = waveLength + 0.0005f;
-	}
-	if (GD->keyboard[DIK_D] & 0x80)
-	{
-		waveLength = waveLength - 0.0005f;
-	}
-	if (GD->keyboard[DIK_U] & 0x80)
-	{
-		rippleFreq = rippleFreq + 1.0f;
-	}
-	if (GD->keyboard[DIK_I] & 0x80)
-	{
-		rippleFreq = rippleFreq - 1.0f;
-	}
-	if (GD->keyboard[DIK_J] & 0x80)
-	{
-		rippleAmp = rippleAmp + 1.0f;
-	}
-	if (GD->keyboard[DIK_K] & 0x80)
-	{
-		rippleAmp = rippleAmp - 1.0f;
-	}
-	if (GD->keyboard[DIK_N] & 0x80)
-	{
-		rippleWL = rippleWL + 0.0005f;
-	}
-	if (GD->keyboard[DIK_M] & 0x80)
-	{
-		rippleWL = rippleWL - 0.0005f;
-	}
-	if ((GD->keyboard[DIK_LSHIFT] & 0x80) && !(GD->prevKeyboard[DIK_LSHIFT] & 0x80))
-	{
- 		m_diagonal ++;
-		if (m_diagonal > 3)
-			m_diagonal = 0;
-	}
-	if ((GD->keyboard[DIK_R] & 0x80) && !(GD->prevKeyboard[DIK_R] & 0x80)) //Reset to default values
-	{
-		freq = 2.0f;
-		amp = 2.5f;
-		waveLength = 0.025f;
-		rippleFreq = 2.0f;
-		rippleAmp = 2.5f;
-		rippleWL = 0.025f;
-	}
-	if ((GD->keyboard[DIK_W] & 0x80) && !(GD->prevKeyboard[DIK_W] & 0x80))
-	{
-		m_waves = !m_waves;
-	}
-	if ((GD->keyboard[DIK_X] & 0x80) && !(GD->prevKeyboard[DIK_X] & 0x80))
-	{
-		m_ripple = !m_ripple;
-	}
-
-	
+		if (GD->mouse->rgbButtons[0])
+		{
+			freq = freq + 1.0f;
+		}
+		if (GD->mouse->rgbButtons[1])
+		{
+			freq = freq - 1.0f;
+		}
+		if (GD->keyboard[DIK_Q] & 0x80)
+		{
+			amp = amp + 1.0f;
+		}
+		if (GD->keyboard[DIK_E] & 0x80)
+		{
+			amp = amp - 1.0f;
+		}
+		if (GD->keyboard[DIK_A] & 0x80)
+		{
+			waveLength = waveLength + 0.0005f;
+		}
+		if (GD->keyboard[DIK_D] & 0x80)
+		{
+			waveLength = waveLength - 0.0005f;
+		}
+		if (GD->keyboard[DIK_U] & 0x80)
+		{
+			rippleFreq = rippleFreq + 1.0f;
+		}
+		if (GD->keyboard[DIK_I] & 0x80)
+		{
+			rippleFreq = rippleFreq - 1.0f;
+		}
+		if (GD->keyboard[DIK_J] & 0x80)
+		{
+			rippleAmp = rippleAmp + 1.0f;
+		}
+		if (GD->keyboard[DIK_K] & 0x80)
+		{
+			rippleAmp = rippleAmp - 1.0f;
+		}
+		if (GD->keyboard[DIK_N] & 0x80)
+		{
+			rippleWL = rippleWL + 0.0005f;
+		}
+		if (GD->keyboard[DIK_M] & 0x80)
+		{
+			rippleWL = rippleWL - 0.0005f;
+		}
+		if ((GD->keyboard[DIK_LSHIFT] & 0x80) && !(GD->prevKeyboard[DIK_LSHIFT] & 0x80))
+		{
+			m_diagonal++;
+			if (m_diagonal > 3)
+				m_diagonal = 0;
+		}
+		if ((GD->keyboard[DIK_R] & 0x80) && !(GD->prevKeyboard[DIK_R] & 0x80)) //Reset to default values
+		{
+			freq = 2.0f;
+			amp = 2.5f;
+			waveLength = 0.025f;
+			rippleFreq = 2.0f;
+			rippleAmp = 2.5f;
+			rippleWL = 0.025f;
+		}
+		if ((GD->keyboard[DIK_W] & 0x80) && !(GD->prevKeyboard[DIK_W] & 0x80))
+		{
+			m_waves = !m_waves;
+		}
+		if ((GD->keyboard[DIK_X] & 0x80) && !(GD->prevKeyboard[DIK_X] & 0x80))
+		{
+			m_ripple = !m_ripple;
+		}
+	}	
 }
 
 
 
 
-void VBPlane::Transform()
+void VBPlane::TransformSin()
 { 
 	for (int j = 0; j < m_numVertices; j++)
 	{
@@ -311,7 +320,7 @@ void VBPlane::Transform()
 		{
 			if (useRippleClass)
 			{
-				m_vertices[j].Pos.y = (m_wavesPos + m_ripplePos) / (rippleCount + 1);
+				m_vertices[j].Pos.y = ((m_wavesPos + m_ripplePos)/2);
 			}
 			else
 			{

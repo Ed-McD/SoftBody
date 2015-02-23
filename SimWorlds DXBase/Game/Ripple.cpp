@@ -15,17 +15,22 @@ float Ripple::Calculate( float vertX, float vertZ)
 {
 	
 	float newAmp;
+	float newWL;
+	float newFreq;
 	float xDiff;
 	float zDiff;
 	float cpOffset;
+	
 	
 	xDiff = (m_originX - vertX);
 	zDiff = (m_originZ - vertZ);
 	cpOffset = sqrtf((zDiff*zDiff) + (xDiff*xDiff));
 
-	newAmp = (m_initAmp *(1 - (cpOffset / 600)));
+	newAmp = (m_initAmp *(1 - (cpOffset / 1000)));
+	newWL = (m_initWL *(1 - (cpOffset / 1000)));
+	newFreq = (m_initFreq *(1 - (cpOffset / 1000)));
 
-	m_ripplePos = newAmp * sin((m_initFreq * m_time) + ((cpOffset)* m_initWL));
+	m_ripplePos = newAmp * sin((newFreq * m_time) + ((cpOffset)* newWL));
 	return (m_ripplePos);
 
 }
