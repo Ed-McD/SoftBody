@@ -32,11 +32,17 @@ public:
 	bool m_waves;
 	bool useSinSim;
 	bool useRippleClass;
+	bool useVerlet;
 
 	list <Ripple*> myRipples;
 	
 	VBPlane(){};
-	virtual ~VBPlane(){};
+	virtual ~VBPlane()
+	{
+		delete prevVertices;
+		delete currVertices;
+		delete dummyVertices;
+	};
 
 	//initialise the Veretx and Index buffers for the cube
 	void init(int _size, ID3D11Device* _GD);
@@ -48,9 +54,13 @@ protected:
 	//this is to allow custom versions of this which create the basic cube and then distort it
 	//see Spirla, SpikedVB and Pillow
 	virtual void TransformSin();
+	void TransformVerlet();
 	
 	int m_size;
-	myVertex* m_vertices;	
+	myVertex* m_vertices;
+	float* prevVertices;
+	float* currVertices;
+	float* dummyVertices;
 	
 
 };

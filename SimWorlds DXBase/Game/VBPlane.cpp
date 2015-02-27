@@ -21,7 +21,9 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 	m_waves = true;
 	rippleCount = 0;
 	useRippleClass = true;
-	useSinSim = false;
+	useSinSim = true;
+	useVerlet = !useSinSim;
+	
 
 	
 	
@@ -32,7 +34,11 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 	m_numVertices = numVerts;
 	m_vertices = new myVertex[numVerts];
 	WORD* indices = new WORD[numVerts];
-	
+
+	prevVertices = new float [m_size*m_size];
+	currVertices = new float [m_size*m_size];
+	memset(prevVertices, 0, sizeof (float)*m_size*m_size);
+	memset(currVertices, 0, sizeof (float)*m_size*m_size);
 	
 
 	//as using the standard VB shader set the tex-coords somewhere safe
@@ -57,11 +63,11 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 			m_vertices[vert].Color = Color(0.0f, 0.0f, 1.0f, 1.0f);
 			m_vertices[vert++].Pos = Vector3((float)(i + 1), 0.5f * (float)(m_size - 1), (float)j);
 
-			m_vertices[vert].Color = Color(0.0f, 0.0f, 1.0f, 1.0f);
+			m_vertices[vert].Color = Color(0.1f, 0.1f, 1.0f, 1.0f);
 			m_vertices[vert++].Pos = Vector3((float)(i + 1), 0.5f * (float)(m_size - 1), (float)j);
-			m_vertices[vert].Color = Color(0.0f, 0.0f, 1.0f, 1.0f);
+			m_vertices[vert].Color = Color(0.1f, 0.1f, 1.0f, 1.0f);
 			m_vertices[vert++].Pos = Vector3((float)i, 0.5f * (float)(m_size - 1), (float)(j + 1));
-			m_vertices[vert].Color = Color(0.0f, 0.0f, 1.0f, 1.0f);
+			m_vertices[vert].Color = Color(0.1f, 0.1f, 1.0f, 1.0f);
 			m_vertices[vert++].Pos = Vector3((float)(i + 1), 0.5f * (float)(m_size - 1), (float)(j + 1));
 			
 		}
@@ -110,6 +116,10 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 
 void VBPlane::Tick(GameData* GD)
 {
+	if (useVerlet)
+	{
+
+	}
 	if (useSinSim) //tick for if the sin function based simulation is being used;
 	{
 
@@ -242,7 +252,14 @@ void VBPlane::Tick(GameData* GD)
 }
 
 
+void VBPlane::TransformVerlet()
+{
 
+
+
+
+
+}
 
 void VBPlane::TransformSin()
 { 
