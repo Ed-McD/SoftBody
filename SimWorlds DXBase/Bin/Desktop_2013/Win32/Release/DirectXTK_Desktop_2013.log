@@ -1,35 +1,9 @@
-﻿Build started 20/02/2015 13:57:19.
-     1>Project "D:\SoftBody\SimWorlds DXBase\DirectXTK_Desktop_2013.vcxproj" on node 2 (Build target(s)).
+﻿Build started 02/03/2015 13:19:59.
+     1>Project "D:\sim\SoftBody\SimWorlds DXBase\DirectXTK_Desktop_2013.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"D:\SoftBody\SimWorlds DXBase\Inc" /Zi /nologo /W4 /WX- /O2 /Oi /Oy- /GL /D _WIN32_WINNT=0x0600 /D _WIN7_PLATFORM_UPDATE /D WIN32 /D NDEBUG /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /Yc"pch.h" /Fp"Bin\Desktop_2013\Win32\Release\DirectXTK.pch" /Fo"Bin\Desktop_2013\Win32\Release\\" /Fd"Bin\Desktop_2013\Win32\Release\DirectXTK.pdb" /Gd /TP /analyze- /errorReport:prompt Src\pch.cpp
-         pch.cpp
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"D:\SoftBody\SimWorlds DXBase\Inc" /Zi /nologo /W4 /WX- /O2 /Oi /Oy- /GL /D _WIN32_WINNT=0x0600 /D _WIN7_PLATFORM_UPDATE /D WIN32 /D NDEBUG /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /Yu"pch.h" /Fp"Bin\Desktop_2013\Win32\Release\DirectXTK.pch" /Fo"Bin\Desktop_2013\Win32\Release\\" /Fd"Bin\Desktop_2013\Win32\Release\DirectXTK.pdb" /Gd /TP /analyze- /errorReport:prompt Src\AlphaTestEffect.cpp Src\BasicEffect.cpp Src\CommonStates.cpp Src\DDSTextureLoader.cpp Src\DGSLEffect.cpp Src\DGSLEffectFactory.cpp Src\DualTextureEffect.cpp Src\BinaryReader.cpp Src\EffectCommon.cpp Src\EffectFactory.cpp Src\EnvironmentMapEffect.cpp Src\GamePad.cpp Src\GeometricPrimitive.cpp Src\Model.cpp Src\ModelLoadCMO.cpp Src\ModelLoadSDKMESH.cpp Src\ModelLoadVBO.cpp Src\ScreenGrab.cpp Src\SimpleMath.cpp Src\SkinnedEffect.cpp Src\SpriteBatch.cpp Src\PrimitiveBatch.cpp Src\SpriteFont.cpp Src\VertexTypes.cpp Src\WICTextureLoader.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"D:\sim\SoftBody\SimWorlds DXBase\Inc" /Zi /nologo /W4 /WX- /O2 /Oi /Oy- /GL /D _WIN32_WINNT=0x0600 /D _WIN7_PLATFORM_UPDATE /D WIN32 /D NDEBUG /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /Yu"pch.h" /Fp"Bin\Desktop_2013\Win32\Release\DirectXTK.pch" /Fo"Bin\Desktop_2013\Win32\Release\\" /Fd"Bin\Desktop_2013\Win32\Release\DirectXTK.pdb" /Gd /TP /analyze- /errorReport:prompt Src\AlphaTestEffect.cpp Src\BasicEffect.cpp
          AlphaTestEffect.cpp
          BasicEffect.cpp
-         CommonStates.cpp
-         DDSTextureLoader.cpp
-         DGSLEffect.cpp
-         DGSLEffectFactory.cpp
-         DualTextureEffect.cpp
-         BinaryReader.cpp
-         EffectCommon.cpp
-         EffectFactory.cpp
-         EnvironmentMapEffect.cpp
-         GamePad.cpp
-         GeometricPrimitive.cpp
-         Model.cpp
-         ModelLoadCMO.cpp
-         ModelLoadSDKMESH.cpp
-         ModelLoadVBO.cpp
-         ScreenGrab.cpp
-         SimpleMath.cpp
-         SkinnedEffect.cpp
-         Compiling...
-         SpriteBatch.cpp
-         PrimitiveBatch.cpp
-         SpriteFont.cpp
-         VertexTypes.cpp
-         WICTextureLoader.cpp
        Lib:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:"Bin\Desktop_2013\Win32\Release\DirectXTK.lib" /NOLOGO /LTCG Bin\Desktop_2013\Win32\Release\AlphaTestEffect.obj
          Bin\Desktop_2013\Win32\Release\BasicEffect.obj
@@ -57,9 +31,9 @@
          Bin\Desktop_2013\Win32\Release\SpriteFont.obj
          Bin\Desktop_2013\Win32\Release\VertexTypes.obj
          Bin\Desktop_2013\Win32\Release\WICTextureLoader.obj
-         DirectXTK_Desktop_2013.vcxproj -> D:\SoftBody\SimWorlds DXBase\Bin\Desktop_2013\Win32\Release\DirectXTK.lib
-     1>Done Building Project "D:\SoftBody\SimWorlds DXBase\DirectXTK_Desktop_2013.vcxproj" (Build target(s)).
+         DirectXTK_Desktop_2013.vcxproj -> D:\sim\SoftBody\SimWorlds DXBase\Bin\Desktop_2013\Win32\Release\DirectXTK.lib
+     1>Done Building Project "D:\sim\SoftBody\SimWorlds DXBase\DirectXTK_Desktop_2013.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:05.65
+Time Elapsed 00:00:00.95

@@ -58,6 +58,7 @@ Game::Game(ID3D11Device* _pd3dDevice, HINSTANCE _hInstance) :m_playTime(0), m_my
 
 	TwBar *myBar;
 	myBar = TwNewBar("Variable Menu");
+	m_GD->myBar = myBar;
 
 	//create a base camera
 	m_cam = new Camera(0.4f * XM_PI, 640.0f / 480.0f, 1.0f, 10000.0f, Vector3::Zero, Vector3::UnitY);
@@ -119,11 +120,11 @@ Game::Game(ID3D11Device* _pd3dDevice, HINSTANCE _hInstance) :m_playTime(0), m_my
 	Snail* snail = new Snail(_pd3dDevice, "../Assets/baseline.txt", 150, 0.98, 0.09f * XM_PI , 0.4f, Color(1.0f, 0.0f, 0.0f, 1.0f), Color(0.0f, 0.0f, 1.0f, 1.0f));
 	snail->SetPos(Vector3(-100.0f, 0.0f, 100.0f));
 	snail->SetScale(2.0f);
-	m_GameObjects.push_back(snail);*/
+	m_GameObjects.push_back(snail);
 
 	GameObject2D* logo = new GameObject2D("logo", _pd3dDevice);
 	logo->SetPos(200.0f * Vector2::One);
-	m_GameObject2Ds.push_back(logo);
+	m_GameObject2Ds.push_back(logo);*/
 	
 	ID3D11DeviceContext* pd3dImmediateContext;
 	_pd3dDevice->GetImmediateContext(&pd3dImmediateContext);
@@ -260,7 +261,7 @@ void Game::render(ID3D11DeviceContext* _pd3dImmediateContext)
 	{
 		(*it)->draw(m_DD2D);
 	}
-	m_DD2D->m_Font->DrawString(m_DD2D->m_Sprites.get(), Helper::charToWChar(attempt.c_str()), Vector2(100, 10), Colors::Yellow);
+	//m_DD2D->m_Font->DrawString(m_DD2D->m_Sprites.get(), Helper::charToWChar(attempt.c_str()), Vector2(100, 10), Colors::Yellow);
 	m_DD2D->m_Sprites->End();
 	
 	TwDraw();
@@ -315,6 +316,7 @@ bool Game::ReadMouse()
 			return false;
 		}
 	}
+	//TwMouseMotion()
 
 	return true;
 

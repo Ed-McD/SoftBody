@@ -15,6 +15,7 @@ class VBPlane : public VBGO
 {
 public:
 	
+	float verletAccel;
 	float amp;
 	float freq;
 	float waveLength;
@@ -41,7 +42,7 @@ public:
 	{
 		delete prevVertices;
 		delete currVertices;
-		delete dummyVertices;
+		//delete dummyVertices;
 	};
 
 	//initialise the Veretx and Index buffers for the cube

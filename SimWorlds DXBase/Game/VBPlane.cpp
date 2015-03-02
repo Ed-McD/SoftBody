@@ -2,7 +2,7 @@
 #include "VBPLane.h"
 #include "drawdata.h"
 #include "Turret_base.h"
-
+#include "AntTweakTest.h"
 
 void VBPlane::init(int _size, ID3D11Device* GD)
 {
@@ -21,7 +21,7 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 	m_waves = true;
 	rippleCount = 0;
 	useRippleClass = true;
-	useSinSim = true;
+	useSinSim = false;
 	useVerlet = !useSinSim;
 	
 
@@ -108,6 +108,8 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 	BuildIB(GD, indices);
 	BuildDVB(GD, numVerts, m_vertices);
 
+	
+
 
 	//delete[] m_vertices; //this is no longer needed as this is now in the Vertex Buffer
 }
@@ -116,8 +118,24 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 
 void VBPlane::Tick(GameData* GD)
 {
+	TwAddVarRW(GD->myBar, "Amplitude", TW_TYPE_FLOAT, &rippleAmp, " min=0 max=20 step=0.01 group= Ripple ");
+	TwAddVarRW(GD->myBar, "Frequency", TW_TYPE_FLOAT, &rippleFreq, " min=0 max=30 step=1 group= Ripple ");
+	TwAddVarRW(GD->myBar, "Wave Length", TW_TYPE_FLOAT, &rippleWL, " min=0 max=0.5 step=0.01 group= Ripple ");
+
+	
+	
+
 	if (useVerlet)
 	{
+		
+		for (int i = 0; i < m_numVertices; i++)
+		{
+
+
+			//\vec x_{ n + 1 } = 2 \vec x_n - \vec x_{ n - 1 }+A(\vec x_n)\, \Delta t^2.
+
+			//m_vertices[i+1].Pos.y = 
+		}
 
 	}
 	if (useSinSim) //tick for if the sin function based simulation is being used;
