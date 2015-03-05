@@ -26,6 +26,11 @@ public:
 	float time;
 	float m_numVertices;
 	float m_dt;
+
+	float verletDamping;
+	float springCoeff;
+	float n;
+
 	int m_diagonal;
 	int m_centrepoint;
 	int rippleCount= 0;
@@ -40,7 +45,7 @@ public:
 	VBPlane(){};
 	virtual ~VBPlane()
 	{
-		delete prevVertices;
+		delete newVertices;
 		delete currVertices;
 		//delete dummyVertices;
 	};
@@ -55,11 +60,12 @@ protected:
 	//this is to allow custom versions of this which create the basic cube and then distort it
 	//see Spirla, SpikedVB and Pillow
 	virtual void TransformSin();
-	void TransformVerlet();
+	void TransformVerlet(GameData* _GD);
+	int getLoc(int _i, int _j);
 	
 	int m_size;
 	myVertex* m_vertices;
-	float* prevVertices;
+	float* newVertices;
 	float* currVertices;
 	float* dummyVertices;
 	

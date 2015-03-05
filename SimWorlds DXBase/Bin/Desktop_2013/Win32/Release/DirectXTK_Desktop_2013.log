@@ -1,39 +1,9 @@
-﻿Build started 02/03/2015 13:19:59.
-     1>Project "D:\sim\SoftBody\SimWorlds DXBase\DirectXTK_Desktop_2013.vcxproj" on node 2 (Build target(s)).
-     1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"D:\sim\SoftBody\SimWorlds DXBase\Inc" /Zi /nologo /W4 /WX- /O2 /Oi /Oy- /GL /D _WIN32_WINNT=0x0600 /D _WIN7_PLATFORM_UPDATE /D WIN32 /D NDEBUG /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /Yu"pch.h" /Fp"Bin\Desktop_2013\Win32\Release\DirectXTK.pch" /Fo"Bin\Desktop_2013\Win32\Release\\" /Fd"Bin\Desktop_2013\Win32\Release\DirectXTK.pdb" /Gd /TP /analyze- /errorReport:prompt Src\AlphaTestEffect.cpp Src\BasicEffect.cpp
-         AlphaTestEffect.cpp
-         BasicEffect.cpp
-       Lib:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:"Bin\Desktop_2013\Win32\Release\DirectXTK.lib" /NOLOGO /LTCG Bin\Desktop_2013\Win32\Release\AlphaTestEffect.obj
-         Bin\Desktop_2013\Win32\Release\BasicEffect.obj
-         Bin\Desktop_2013\Win32\Release\CommonStates.obj
-         Bin\Desktop_2013\Win32\Release\DDSTextureLoader.obj
-         Bin\Desktop_2013\Win32\Release\DGSLEffect.obj
-         Bin\Desktop_2013\Win32\Release\DGSLEffectFactory.obj
-         Bin\Desktop_2013\Win32\Release\DualTextureEffect.obj
-         Bin\Desktop_2013\Win32\Release\BinaryReader.obj
-         Bin\Desktop_2013\Win32\Release\EffectCommon.obj
-         Bin\Desktop_2013\Win32\Release\EffectFactory.obj
-         Bin\Desktop_2013\Win32\Release\EnvironmentMapEffect.obj
-         Bin\Desktop_2013\Win32\Release\GamePad.obj
-         Bin\Desktop_2013\Win32\Release\GeometricPrimitive.obj
-         Bin\Desktop_2013\Win32\Release\Model.obj
-         Bin\Desktop_2013\Win32\Release\ModelLoadCMO.obj
-         Bin\Desktop_2013\Win32\Release\ModelLoadSDKMESH.obj
-         Bin\Desktop_2013\Win32\Release\ModelLoadVBO.obj
-         Bin\Desktop_2013\Win32\Release\pch.obj
-         Bin\Desktop_2013\Win32\Release\ScreenGrab.obj
-         Bin\Desktop_2013\Win32\Release\SimpleMath.obj
-         Bin\Desktop_2013\Win32\Release\SkinnedEffect.obj
-         Bin\Desktop_2013\Win32\Release\SpriteBatch.obj
-         Bin\Desktop_2013\Win32\Release\PrimitiveBatch.obj
-         Bin\Desktop_2013\Win32\Release\SpriteFont.obj
-         Bin\Desktop_2013\Win32\Release\VertexTypes.obj
-         Bin\Desktop_2013\Win32\Release\WICTextureLoader.obj
-         DirectXTK_Desktop_2013.vcxproj -> D:\sim\SoftBody\SimWorlds DXBase\Bin\Desktop_2013\Win32\Release\DirectXTK.lib
-     1>Done Building Project "D:\sim\SoftBody\SimWorlds DXBase\DirectXTK_Desktop_2013.vcxproj" (Build target(s)).
+﻿Build started 05/03/2015 15:33:06.
+     1>Project "D:\Simplane\SoftBody\SimWorlds DXBase\DirectXTK_Desktop_2013.vcxproj" on node 2 (Build target(s)).
+     1>Lib:
+         DirectXTK_Desktop_2013.vcxproj -> D:\Simplane\SoftBody\SimWorlds DXBase\Bin\Desktop_2013\Win32\Release\DirectXTK.lib
+     1>Done Building Project "D:\Simplane\SoftBody\SimWorlds DXBase\DirectXTK_Desktop_2013.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.95
+Time Elapsed 00:00:00.06

@@ -15,7 +15,7 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 	rippleAmp = 15.0f;
 	rippleWL = 0.1f;
 	rippleFalloff = 0.75f;
-	float scale = 5.0f;
+	float scale = 1.0f;
 	m_diagonal = 0;
 	m_ripple = false;
 	m_waves = true;
@@ -23,10 +23,9 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 	useRippleClass = true;
 	useSinSim = false;
 	useVerlet = !useSinSim;
-	
 
-	
-	
+
+
 
 	//calculate number of vertices and primatives
 	int numVerts = 6 * (m_size - 1) * (m_size - 1);
@@ -35,9 +34,9 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 	m_vertices = new myVertex[numVerts];
 	WORD* indices = new WORD[numVerts];
 
-	prevVertices = new float [m_size*m_size];
+	newVertices = new float [m_size*m_size];
 	currVertices = new float [m_size*m_size];
-	memset(prevVertices, 0, sizeof (float)*m_size*m_size);
+	memset(newVertices, 0, sizeof (float)*m_size*m_size);
 	memset(currVertices, 0, sizeof (float)*m_size*m_size);
 	
 
@@ -51,9 +50,9 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 
 	//in each loop create the two traingles for the matching sub-square on each of the six faces
 	int vert = 0;
-	for (int i = -(m_size - 1) / 2; i < (m_size - 1) / 2; i++)
+	for (int i = 0; i < (m_size-1); i++)
 	{
-		for (int j = -(m_size - 1) / 2; j < (m_size - 1) / 2; j++)
+		for (int j = 0; j < (m_size - 1); j++)
 		{
 			//top
 			m_vertices[vert].Color = Color(0.0f, 0.0f, 1.0f, 1.0f);
@@ -108,7 +107,7 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 	BuildIB(GD, indices);
 	BuildDVB(GD, numVerts, m_vertices);
 
-	
+	currVertices[getLoc(m_size / 2, m_size / 2)] += 50.0f;
 
 
 	//delete[] m_vertices; //this is no longer needed as this is now in the Vertex Buffer
@@ -127,16 +126,7 @@ void VBPlane::Tick(GameData* GD)
 
 	if (useVerlet)
 	{
-		
-		for (int i = 0; i < m_numVertices; i++)
-		{
-
-
-			//\vec x_{ n + 1 } = 2 \vec x_n - \vec x_{ n - 1 }+A(\vec x_n)\, \Delta t^2.
-
-			//m_vertices[i+1].Pos.y = 
-		}
-
+		TransformVerlet(GD);
 	}
 	if (useSinSim) //tick for if the sin function based simulation is being used;
 	{
@@ -267,16 +257,78 @@ void VBPlane::Tick(GameData* GD)
 			m_ripple = !m_ripple;
 		}
 	}	
+
+	VBGO::Tick(GD);
 }
 
 
-void VBPlane::TransformVerlet()
+void VBPlane::TransformVerlet(GameData* GD)
 {
+	float verl_dt = 0.01f;
+	for (int i = 0; i < m_size; i++)
+	{
+		for (int j = 0; j < m_size; j++)
+		{
+
+			float UP;
+			float DOWN;
+			float LEFT;
+			float RIGHT;
+			UP = currVertices[getLoc(i-1, j)];
+			DOWN = currVertices[getLoc(i+1, j)];
+			LEFT = currVertices[getLoc(i, j-1)];
+			RIGHT = currVertices[getLoc(i, j+1)];
+			
+			float diffGrad = 30.0f *(UP + DOWN + LEFT + RIGHT - 4.0f *currVertices[getLoc(i,j)]);
+
+
+			newVertices[getLoc(i, j)] = ((2 * currVertices[getLoc(i, j)]) - newVertices[getLoc(i, j)] + (-0.05f * currVertices[getLoc(i, j)]/*Replace with Hookes*/ * (verl_dt*verl_dt)));
+
+			newVertices[getLoc(i, j)] += verl_dt * diffGrad;
 
 
 
+		}
+
+	}
+
+	for (int i = 0; i < m_numVertices; i++)
+	{
+		m_vertices[i].Pos.y = newVertices[getLoc(m_vertices[i].Pos.x, m_vertices[i].Pos.z)];
+	}
 
 
+ 	dummyVertices = newVertices;
+	newVertices = currVertices;
+	currVertices = dummyVertices;
+
+
+
+}
+
+int VBPlane::getLoc( int _i, int _j)
+{
+	if (_i == -1)
+	{
+		_i = m_size-1;
+	}
+	if (_i == m_size)
+	{
+		_i = 0;
+	}
+
+	if (_j == -1)
+	{
+		_j = m_size-1;
+	}
+	if (_j == m_size)
+	{
+		_j = 0;
+	}
+
+	int location = _i * m_size + _j;
+
+	return (location);
 }
 
 void VBPlane::TransformSin()

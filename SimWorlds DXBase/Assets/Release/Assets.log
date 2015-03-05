@@ -1,5 +1,5 @@
-﻿Build started 02/03/2015 13:17:55.
-     1>Project "D:\sim\SoftBody\SimWorlds DXBase\Assets\Assets.vcxproj" on node 5 (Build target(s)).
+﻿Build started 05/03/2015 15:33:06.
+     1>Project "D:\Simplane\SoftBody\SimWorlds DXBase\Assets\Assets.vcxproj" on node 5 (Build target(s)).
      1>_ImageContentTask:
          grass.jpg
          white.jpg
@@ -7,8 +7,8 @@
        _MeshContentTask:
          table.FBX
          treasure_chest.FBX
-     1>Done Building Project "D:\sim\SoftBody\SimWorlds DXBase\Assets\Assets.vcxproj" (Build target(s)).
+     1>Done Building Project "D:\Simplane\SoftBody\SimWorlds DXBase\Assets\Assets.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:01.39
+Time Elapsed 00:00:00.06

@@ -1,8 +1,8 @@
-﻿Build started 20/02/2015 13:47:42.
-     1>Project "D:\SoftBody\SimWorlds DXBase\DirectXTK_Desktop_2013.vcxproj" on node 2 (Build target(s)).
+﻿Build started 05/03/2015 18:09:26.
+     1>Project "D:\Simplane\SoftBody\SimWorlds DXBase\DirectXTK_Desktop_2013.vcxproj" on node 2 (Build target(s)).
      1>Lib:
-         DirectXTK_Desktop_2013.vcxproj -> D:\SoftBody\SimWorlds DXBase\Bin\Desktop_2013\Win32\Debug\DirectXTK.lib
-     1>Done Building Project "D:\SoftBody\SimWorlds DXBase\DirectXTK_Desktop_2013.vcxproj" (Build target(s)).
+         DirectXTK_Desktop_2013.vcxproj -> D:\Simplane\SoftBody\SimWorlds DXBase\Bin\Desktop_2013\Win32\Debug\DirectXTK.lib
+     1>Done Building Project "D:\Simplane\SoftBody\SimWorlds DXBase\DirectXTK_Desktop_2013.vcxproj" (Build target(s)).
 
 Build succeeded.
 
