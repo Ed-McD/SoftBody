@@ -62,6 +62,7 @@ protected:
 	virtual void TransformSin();
 	void TransformVerlet(GameData* _GD);
 	int getLoc(int _i, int _j);
+	float springForce(float _height);
 	
 	int m_size;
 	myVertex* m_vertices;

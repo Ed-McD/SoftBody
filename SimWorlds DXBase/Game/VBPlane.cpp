@@ -23,6 +23,7 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 	useRippleClass = true;
 	useSinSim = false;
 	useVerlet = !useSinSim;
+	springCoeff = 0.1f;
 
 
 
@@ -107,7 +108,7 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 	BuildIB(GD, indices);
 	BuildDVB(GD, numVerts, m_vertices);
 
-	currVertices[getLoc(m_size / 2, m_size / 2)] += 50.0f;
+	currVertices[getLoc(m_size / 2, m_size / 2)] += 1.0f;
 
 
 	//delete[] m_vertices; //this is no longer needed as this is now in the Vertex Buffer
@@ -126,6 +127,10 @@ void VBPlane::Tick(GameData* GD)
 
 	if (useVerlet)
 	{
+		if ((GD->keyboard[DIK_RETURN] & 0x80) && !(GD->prevKeyboard[DIK_RETURN] & 0x80))
+		{
+			currVertices[getLoc(m_size / 2, m_size / 2)] += 25.0f;
+		}
 		TransformVerlet(GD);
 	}
 	if (useSinSim) //tick for if the sin function based simulation is being used;
@@ -264,7 +269,7 @@ void VBPlane::Tick(GameData* GD)
 
 void VBPlane::TransformVerlet(GameData* GD)
 {
-	float verl_dt = 0.01f;
+	float verl_dt = 0.001f;
 	for (int i = 0; i < m_size; i++)
 	{
 		for (int j = 0; j < m_size; j++)
@@ -279,10 +284,10 @@ void VBPlane::TransformVerlet(GameData* GD)
 			LEFT = currVertices[getLoc(i, j-1)];
 			RIGHT = currVertices[getLoc(i, j+1)];
 			
-			float diffGrad = 30.0f *(UP + DOWN + LEFT + RIGHT - 4.0f *currVertices[getLoc(i,j)]);
+			float diffGrad = 100.0f *(UP + DOWN + LEFT + RIGHT - 4.0f *currVertices[getLoc(i,j)]);
 
 
-			newVertices[getLoc(i, j)] = ((2 * currVertices[getLoc(i, j)]) - newVertices[getLoc(i, j)] + (-0.05f * currVertices[getLoc(i, j)]/*Replace with Hookes*/ * (verl_dt*verl_dt)));
+			newVertices[getLoc(i, j)] = ((2 * currVertices[getLoc(i, j)]) - newVertices[getLoc(i, j)] + (springForce(currVertices[getLoc(i,j)]) * (verl_dt*verl_dt)));
 
 			newVertices[getLoc(i, j)] += verl_dt * diffGrad;
 
@@ -303,6 +308,19 @@ void VBPlane::TransformVerlet(GameData* GD)
 	currVertices = dummyVertices;
 
 
+
+}
+
+float VBPlane::springForce(float _height)
+{
+	/*if (_height < 0.0f)
+	{
+		_height = 0.0f - _height;
+	}*/
+	float force = 0.0f;
+	force = -(springCoeff * _height);
+
+	return(force);
 
 }
 
