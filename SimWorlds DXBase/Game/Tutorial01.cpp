@@ -358,7 +358,7 @@ HRESULT InitDevice()
 void Render()
 {
 	// Just clear the backbuffer
-	g_pImmediateContext->ClearRenderTargetView(g_pRenderTargetView, Colors::MidnightBlue); 
+	g_pImmediateContext->ClearRenderTargetView(g_pRenderTargetView, Colors::CornflowerBlue);
 	// Clear the depth stencil
 	g_pImmediateContext->ClearDepthStencilView(g_pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0, 0);
 	

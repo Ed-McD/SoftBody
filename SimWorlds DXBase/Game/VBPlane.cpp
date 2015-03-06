@@ -23,7 +23,7 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 	useRippleClass = true;
 	useSinSim = false;
 	useVerlet = !useSinSim;
-	springCoeff = 0.1f;
+	springCoeff = 0.5f;
 
 
 
@@ -129,7 +129,7 @@ void VBPlane::Tick(GameData* GD)
 	{
 		if ((GD->keyboard[DIK_RETURN] & 0x80) && !(GD->prevKeyboard[DIK_RETURN] & 0x80))
 		{
-			currVertices[getLoc(m_size / 2, m_size / 2)] += 25.0f;
+			currVertices[getLoc(m_size / 2, m_size / 2)] += 5.0f;
 		}
 		TransformVerlet(GD);
 	}
@@ -284,7 +284,7 @@ void VBPlane::TransformVerlet(GameData* GD)
 			LEFT = currVertices[getLoc(i, j-1)];
 			RIGHT = currVertices[getLoc(i, j+1)];
 			
-			float diffGrad = 100.0f *(UP + DOWN + LEFT + RIGHT - 4.0f *currVertices[getLoc(i,j)]);
+			float diffGrad = 30.0 *(UP + DOWN + LEFT + RIGHT - 4.0f *currVertices[getLoc(i,j)]);
 
 
 			newVertices[getLoc(i, j)] = ((2 * currVertices[getLoc(i, j)]) - newVertices[getLoc(i, j)] + (springForce(currVertices[getLoc(i,j)]) * (verl_dt*verl_dt)));
@@ -317,8 +317,13 @@ float VBPlane::springForce(float _height)
 	{
 		_height = 0.0f - _height;
 	}*/
+	float MAX = 10.0f;
 	float force = 0.0f;
 	force = -(springCoeff * _height);
+	if (fabs(force) > MAX)
+	{
+		force = force > 0 ? MAX : -MAX;
+	}
 
 	return(force);
 
