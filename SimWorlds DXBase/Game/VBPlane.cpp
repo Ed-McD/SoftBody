@@ -140,19 +140,19 @@ void VBPlane::Tick(GameData* GD)
 		{
 
 
-			for (int j = 0; j < m_numVertices; j++)
+			/*for (int j = 0; j < m_numVertices; j++)
 			{
 				float xDiff;
 				float zDiff;
 				float playerPosOffset;
-				xDiff = (GD->playerPos.x - m_vertices[j].Pos.x);
+				xDiff = (GD->player->m_pos.x - m_vertices[j].Pos.x);
 				zDiff = (GD->playerPos.z - m_vertices[j].Pos.z);
 				playerPosOffset = sqrtf((zDiff*zDiff) + (xDiff*xDiff));
 
 				float cpxDiff;
 				float cpzDiff;
 				float cpOffset;
-				cpxDiff = (m_vertices[m_centrepoint].Pos.x - GD->playerPos.x);
+				cpxDiff = (m_vertices[m_centrepoint].Pos.x - GD->player.x);
 				cpzDiff = (m_vertices[m_centrepoint].Pos.z - GD->playerPos.z);
 				cpOffset = sqrtf((cpzDiff*cpzDiff) + (cpxDiff*cpxDiff));
 
@@ -160,7 +160,7 @@ void VBPlane::Tick(GameData* GD)
 				{
 					m_centrepoint = j;
 				}
-			}
+			}*/
 			if (useRippleClass)
 			{
 				m_centrepoint = rand() % (100000);
@@ -266,14 +266,16 @@ void VBPlane::Tick(GameData* GD)
 	VBGO::Tick(GD);
 }
 
-
 void VBPlane::TransformVerlet(GameData* GD)
 {
+	
 	float verl_dt = 0.001f;
 	for (int i = 0; i < m_size; i++)
 	{
+
 		for (int j = 0; j < m_size; j++)
 		{
+			
 
 			float UP;
 			float DOWN;
@@ -284,7 +286,7 @@ void VBPlane::TransformVerlet(GameData* GD)
 			LEFT = currVertices[getLoc(i, j-1)];
 			RIGHT = currVertices[getLoc(i, j+1)];
 			
-			float diffGrad = 30.0 *(UP + DOWN + LEFT + RIGHT - 4.0f *currVertices[getLoc(i,j)]);
+			float diffGrad = 30.0f *(UP + DOWN + LEFT + RIGHT - 4.0f *currVertices[getLoc(i,j)]);
 
 
 			newVertices[getLoc(i, j)] = ((2 * currVertices[getLoc(i, j)]) - newVertices[getLoc(i, j)] + (springForce(currVertices[getLoc(i,j)]) * (verl_dt*verl_dt)));
@@ -306,6 +308,8 @@ void VBPlane::TransformVerlet(GameData* GD)
  	dummyVertices = newVertices;
 	newVertices = currVertices;
 	currVertices = dummyVertices;
+
+
 
 
 
@@ -331,22 +335,27 @@ float VBPlane::springForce(float _height)
 
 int VBPlane::getLoc( int _i, int _j)
 {
+	//wrap arounds
 	if (_i == -1)
 	{
-		_i = m_size-1;
+		//_i = m_size-1;
+		_i = 0;
 	}
 	if (_i == m_size)
 	{
-		_i = 0;
+		//_i = 0;
+		_i = m_size - 1;
 	}
 
 	if (_j == -1)
 	{
-		_j = m_size-1;
+		//_j = m_size-1;
+		_j = 0;
 	}
 	if (_j == m_size)
 	{
-		_j = 0;
+		//_j = 0;
+		_j = m_size - 1;
 	}
 
 	int location = _i * m_size + _j;

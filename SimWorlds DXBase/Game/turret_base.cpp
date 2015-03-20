@@ -61,7 +61,7 @@ void Turret_Base::Tick(GameData* _GD)
 		}
 
 	}	
-	_GD->playerPos = m_pos;
+
 
 	float length2 = (m_pos.z * m_pos.z + m_pos.x * m_pos.x);
 	float max = 1000.0f;
