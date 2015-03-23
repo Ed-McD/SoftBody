@@ -5,6 +5,7 @@
 
 Turret_Base::Turret_Base(string _fileName, ID3D11Device* _pd3dDevice, MyEffectFactory* _EF) :CMOGO(_fileName, _pd3dDevice, _EF)
 {
+	publicPos = m_pos;
 	m_pos.y = 10.0f;
 	m_scale = 2.0f * Vector3::One;
 
@@ -18,6 +19,7 @@ Turret_Base::~Turret_Base()
 
 void Turret_Base::Tick(GameData* _GD)
 {
+	publicPos = m_pos;
 	switch (_GD->GS)
 	{
 		case GS_PLAY_MAIN_CAM:

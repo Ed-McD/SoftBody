@@ -129,8 +129,29 @@ void VBPlane::Tick(GameData* GD)
 	{
 		if ((GD->keyboard[DIK_RETURN] & 0x80) && !(GD->prevKeyboard[DIK_RETURN] & 0x80))
 		{
-			currVertices[getLoc(m_size / 2, m_size / 2)] += 5.0f;
+
+			Vector3 playerPos = GD->player->publicPos;
+			Vector3 shortest = {10000.0f,10000.0f,10000.0f};
+			int closestI = m_size/2;
+			int closestJ = m_size/2;
+
+			for (int i = 0; i < m_size; i++)
+			{
+				for (int j = 0; j < m_size; j++)
+				{
+					if (Vector3::Distance(m_vertices[getLoc(i, j)].Pos, playerPos) <= Vector3::Distance(shortest, playerPos))
+					{
+						shortest = m_vertices[getLoc(i, j)].Pos;
+						closestI = i;
+						closestJ = j;
+					}
+				}
+			}
+
+			currVertices[getLoc(closestI,closestJ)] += 5.0f;
 		}
+
+		
 		TransformVerlet(GD);
 	}
 	if (useSinSim) //tick for if the sin function based simulation is being used;

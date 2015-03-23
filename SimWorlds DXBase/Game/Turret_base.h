@@ -8,6 +8,8 @@ class Turret_Base : public CMOGO
 public:
 	Turret_Base(string _fileName, ID3D11Device* _pd3dDevice, MyEffectFactory* _EF);
 	~Turret_Base();
+	
+	Vector3 publicPos;
 
 	void Tick(GameData* GD);
 
