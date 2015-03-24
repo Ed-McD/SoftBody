@@ -5,6 +5,7 @@
 #include "Ripple.h"
 #include <list>
 
+class Turret_Base;
 using namespace std;
 
 
@@ -27,6 +28,8 @@ public:
 	float m_numVertices;
 	float m_dt;
 
+	float m_scale;
+
 	float verletDamping;
 	float springCoeff;
 	float n;
@@ -40,6 +43,8 @@ public:
 	bool useRippleClass;
 	bool useVerlet;
 
+	Turret_Base* playerPnt;
+
 	list <Ripple*> myRipples;
 	
 	VBPlane(){};
@@ -51,7 +56,7 @@ public:
 	};
 
 	//initialise the Veretx and Index buffers for the cube
-	void init(int _size, ID3D11Device* _GD);
+	void init(int _size, float _scale, ID3D11Device* _GD);
 	void Tick(GameData* GD);
 
 	virtual void Draw(DrawData* _DD);

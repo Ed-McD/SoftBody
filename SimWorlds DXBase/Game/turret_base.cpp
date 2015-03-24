@@ -19,6 +19,7 @@ Turret_Base::~Turret_Base()
 
 void Turret_Base::Tick(GameData* _GD)
 {
+	moving = false;
 	publicPos = m_pos;
 	switch (_GD->GS)
 	{
@@ -27,6 +28,7 @@ void Turret_Base::Tick(GameData* _GD)
 
 			if (abs(_GD->mouse->lX) > 0.01f || abs(_GD->mouse->lY) > 0.01f)
 			{
+				moving = true;
 				m_yaw = atan2f(_GD->mouse->lX, _GD->mouse->lY) - XM_PIDIV2;
 			}
 			m_pos.x += _GD->mouse->lX;
@@ -52,11 +54,13 @@ void Turret_Base::Tick(GameData* _GD)
 			if (_GD->keyboard[DIK_W] & 0x80)
 			{
 				m_pos += speed * Vector3::Transform(forward, rotMat);
+				moving = true;
 			}
 
 			if (_GD->keyboard[DIK_S] & 0x80)
 			{
 				m_pos -= speed * Vector3::Transform(forward, rotMat);
+				moving = true;
 			}
 
 			break;

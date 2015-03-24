@@ -95,10 +95,12 @@ Game::Game(ID3D11Device* _pd3dDevice, HINSTANCE _hInstance) :m_playTime(0), m_my
 	cube->SetScale(4.0f);
 	m_GameObjects.push_back(cube);*/
 	
+	float planeScale = 4.0f;
 	VBPlane* plane = new VBPlane();
-	plane->init(100, _pd3dDevice);
-	plane->SetPos(Vector3(-200.0f, 0.0f, -200.0f));
-	plane->SetScale(4.0f);
+	plane->init(100, planeScale, _pd3dDevice);
+	plane->SetPos(Vector3(0.0f, 0.0f, 0.0f));
+	plane->SetScale(planeScale);
+	plane->playerPnt = base;
 	m_GameObjects.push_back(plane);
 
 	/*SpikedVB* spikes = new SpikedVB();

@@ -10,6 +10,7 @@ public:
 	~Turret_Base();
 	
 	Vector3 publicPos;
+	bool moving = false;
 
 	void Tick(GameData* GD);
 

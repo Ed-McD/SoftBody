@@ -4,7 +4,7 @@
 #include "Turret_base.h"
 #include "AntTweakTest.h"
 
-void VBPlane::init(int _size, ID3D11Device* GD)
+void VBPlane::init(int _size, float _scale, ID3D11Device* GD)
 {
 	m_size = _size;
 	time = 0.0f;
@@ -15,7 +15,7 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 	rippleAmp = 15.0f;
 	rippleWL = 0.1f;
 	rippleFalloff = 0.75f;
-	float scale = 1.0f;
+	m_scale = _scale;
 	m_diagonal = 0;
 	m_ripple = false;
 	m_waves = true;
@@ -23,7 +23,9 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 	useRippleClass = true;
 	useSinSim = false;
 	useVerlet = !useSinSim;
-	springCoeff = 0.5f;
+	springCoeff = 0.75f;
+	float aLvl = 0.25f;
+	
 
 
 
@@ -56,32 +58,35 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 		for (int j = 0; j < (m_size - 1); j++)
 		{
 			//top
-			m_vertices[vert].Color = Color(0.0f, 0.0f, 1.0f, 1.0f);
+			m_vertices[vert].Color = Color(0.0f, 0.0f, 1.0f, aLvl);
 			m_vertices[vert++].Pos = Vector3((float)i, 0.5f * (float)(m_size - 1), (float)j);
-			m_vertices[vert].Color = Color(0.0f, 0.0f, 1.0f, 1.0f);
+			m_vertices[vert].Color = Color(0.0f, 0.0f, 1.0f, aLvl);
 			m_vertices[vert++].Pos = Vector3((float)i, 0.5f * (float)(m_size - 1), (float)(j + 1));
-			m_vertices[vert].Color = Color(0.0f, 0.0f, 1.0f, 1.0f);
+			m_vertices[vert].Color = Color(0.0f, 0.0f, 1.0f, aLvl);
 			m_vertices[vert++].Pos = Vector3((float)(i + 1), 0.5f * (float)(m_size - 1), (float)j);
 
-			m_vertices[vert].Color = Color(0.1f, 0.1f, 1.0f, 1.0f);
+			m_vertices[vert].Color = Color(0.1f, 0.1f, 1.0f, aLvl);
 			m_vertices[vert++].Pos = Vector3((float)(i + 1), 0.5f * (float)(m_size - 1), (float)j);
-			m_vertices[vert].Color = Color(0.1f, 0.1f, 1.0f, 1.0f);
+			m_vertices[vert].Color = Color(0.1f, 0.1f, 1.0f, aLvl);
 			m_vertices[vert++].Pos = Vector3((float)i, 0.5f * (float)(m_size - 1), (float)(j + 1));
-			m_vertices[vert].Color = Color(0.1f, 0.1f, 1.0f, 1.0f);
+			m_vertices[vert].Color = Color(0.1f, 0.1f, 1.0f, aLvl);
 			m_vertices[vert++].Pos = Vector3((float)(i + 1), 0.5f * (float)(m_size - 1), (float)(j + 1));
 			
 		}
 	}
-	for (int i = 0; i < m_numPrims * 3; i++)
+
+
+
+	/*for (int i = 0; i < m_numPrims * 3; i++)
 	{
 		Vector3 vertScale = m_vertices[i].Pos;
 
-		Matrix scaleMat = Matrix::CreateScale(scale, 1.0f,scale);
+		Matrix scaleMat = Matrix::CreateScale(m_scale, 1.0f, m_scale);
 
 		Vector3 newScale = Vector3::Transform(vertScale, scaleMat);
 
 		m_vertices[i].Pos = newScale;
-	}
+	}*/
 	//carry out some kind of transform on these vertices to make this object more interesting
 	//Transform();
 
@@ -108,7 +113,7 @@ void VBPlane::init(int _size, ID3D11Device* GD)
 	BuildIB(GD, indices);
 	BuildDVB(GD, numVerts, m_vertices);
 
-	currVertices[getLoc(m_size / 2, m_size / 2)] += 1.0f;
+	//currVertices[getLoc(m_size / 2, m_size / 2)] += 1.0f;
 
 
 	//delete[] m_vertices; //this is no longer needed as this is now in the Vertex Buffer
@@ -127,32 +132,12 @@ void VBPlane::Tick(GameData* GD)
 
 	if (useVerlet)
 	{
-		if ((GD->keyboard[DIK_RETURN] & 0x80) && !(GD->prevKeyboard[DIK_RETURN] & 0x80))
+		if (playerPnt->moving)
 		{
-
-			Vector3 playerPos = GD->player->publicPos;
-			Vector3 shortest = {10000.0f,10000.0f,10000.0f};
-			int closestI = m_size/2;
-			int closestJ = m_size/2;
-
-			for (int i = 0; i < m_size; i++)
-			{
-				for (int j = 0; j < m_size; j++)
-				{
-					if (Vector3::Distance(m_vertices[getLoc(i, j)].Pos, playerPos) <= Vector3::Distance(shortest, playerPos))
-					{
-						shortest = m_vertices[getLoc(i, j)].Pos;
-						closestI = i;
-						closestJ = j;
-					}
-				}
-			}
-
-			currVertices[getLoc(closestI,closestJ)] += 5.0f;
-		}
-
-		
+			currVertices[getLoc(playerPnt->publicPos.x/ m_scale, playerPnt->publicPos.z/m_scale)] -= 0.1f;
+		}		
 		TransformVerlet(GD);
+
 	}
 	if (useSinSim) //tick for if the sin function based simulation is being used;
 	{
@@ -206,7 +191,7 @@ void VBPlane::Tick(GameData* GD)
 			}
 
 		}
-		time = time + GD->dt;
+		
 		TransformSin();
 
 
@@ -283,7 +268,8 @@ void VBPlane::Tick(GameData* GD)
 			m_ripple = !m_ripple;
 		}
 	}	
-
+	
+	time += GD->dt;
 	VBGO::Tick(GD);
 }
 
@@ -319,11 +305,17 @@ void VBPlane::TransformVerlet(GameData* GD)
 		}
 
 	}
+	
+	for (int i = 0; i < m_size; i++)
+	{
+		newVertices[getLoc(i, 0)] = 0.5f * sin(2.0f * time);
+	}
 
 	for (int i = 0; i < m_numVertices; i++)
 	{
 		m_vertices[i].Pos.y = newVertices[getLoc(m_vertices[i].Pos.x, m_vertices[i].Pos.z)];
 	}
+	
 
 
  	dummyVertices = newVertices;
@@ -342,6 +334,8 @@ float VBPlane::springForce(float _height)
 	{
 		_height = 0.0f - _height;
 	}*/
+
+
 	float MAX = 10.0f;
 	float force = 0.0f;
 	force = -(springCoeff * _height);
@@ -359,24 +353,24 @@ int VBPlane::getLoc( int _i, int _j)
 	//wrap arounds
 	if (_i == -1)
 	{
-		//_i = m_size-1;
-		_i = 0;
+		_i = m_size-1;
+		//_i = 0;
 	}
 	if (_i == m_size)
 	{
-		//_i = 0;
-		_i = m_size - 1;
+		_i = 0;
+		//_i = m_size - 1;
 	}
 
 	if (_j == -1)
 	{
-		//_j = m_size-1;
-		_j = 0;
+		_j = m_size-1;
+		//_j = 0;
 	}
 	if (_j == m_size)
 	{
-		//_j = 0;
-		_j = m_size - 1;
+		_j = 0;
+		//_j = m_size - 1;
 	}
 
 	int location = _i * m_size + _j;
