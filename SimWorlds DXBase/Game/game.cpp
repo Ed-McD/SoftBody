@@ -11,6 +11,7 @@
 #include "drawdata.h"
 #include "DrawData2D.h"
 #include "AntTweakTest.h"
+#include "ATBInput.h"
 
 using namespace DirectX;
 
@@ -59,6 +60,9 @@ Game::Game(ID3D11Device* _pd3dDevice, HINSTANCE _hInstance) :m_playTime(0), m_my
 	TwBar *myBar;
 	myBar = TwNewBar("Variable Menu");
 	m_GD->myBar = myBar;
+	
+	TwBarInputs = new ATBInput();
+	
 
 	//create a base camera
 	m_cam = new Camera(0.4f * XM_PI, 640.0f / 480.0f, 1.0f, 10000.0f, Vector3::Zero, Vector3::UnitY);
@@ -77,7 +81,7 @@ Game::Game(ID3D11Device* _pd3dDevice, HINSTANCE _hInstance) :m_playTime(0), m_my
 	m_TPSCam = new TPSCamera(0.25f * XM_PI, 640.0f / 480.0f, 1.0f, 10000.0f, base, Vector3::UnitY, Vector3(-200.0f, 100.0f, 0.0f));
 	m_GameObjects.push_back(m_TPSCam);
 	
-	m_Light = new Light(Vector3(0.0f, 100.0f, 160.0f), Color(1.0f, 1.0f, 1.0f, 1.0f), Color(0.4f, 0.1f, 0.1f, 1.0f));
+	m_Light = new Light(Vector3(0.0f, 100.0f, 160.0f), Color(1.0f, 1.0f, 1.0f, 1.0f), Color(0.75f, 0.75f, 0.75f, 0.75f));
 	m_GameObjects.push_back(m_Light);
 
 	//FileVBGO* terrainBox = new FileVBGO("../Assets/terrainTex.txt", _pd3dDevice);
@@ -97,7 +101,7 @@ Game::Game(ID3D11Device* _pd3dDevice, HINSTANCE _hInstance) :m_playTime(0), m_my
 	
 	float planeScale = 4.0f;
 	VBPlane* plane = new VBPlane();
-	plane->init(100, planeScale, _pd3dDevice);
+	plane->init(100, planeScale,m_GD ,_pd3dDevice);
 	plane->SetPos(Vector3(0.0f, 0.0f, 0.0f));
 	plane->SetScale(planeScale);
 	plane->playerPnt = base;
@@ -193,6 +197,8 @@ bool Game::update()
 {
 	ReadKeyboard();
 	ReadMouse();
+	TwBarInputs->processInput(m_GD);
+	
 
 	if (m_keyboardState[DIK_ESCAPE] & 0x80)
 	{

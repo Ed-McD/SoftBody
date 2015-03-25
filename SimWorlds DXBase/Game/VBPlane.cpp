@@ -4,7 +4,7 @@
 #include "Turret_base.h"
 #include "AntTweakTest.h"
 
-void VBPlane::init(int _size, float _scale, ID3D11Device* GD)
+void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 {
 	m_size = _size;
 	time = 0.0f;
@@ -24,8 +24,12 @@ void VBPlane::init(int _size, float _scale, ID3D11Device* GD)
 	useSinSim = false;
 	useVerlet = !useSinSim;
 	springCoeff = 0.75f;
+	disturbance = 5.0f;
+
+	m_GD = _GD;
+
 	float aLvl = 0.25f;
-	
+	Color surfaceColour = {0.0f, 0.0f, 1.0f, aLvl};
 
 
 
@@ -58,18 +62,18 @@ void VBPlane::init(int _size, float _scale, ID3D11Device* GD)
 		for (int j = 0; j < (m_size - 1); j++)
 		{
 			//top
-			m_vertices[vert].Color = Color(0.0f, 0.0f, 1.0f, aLvl);
+			m_vertices[vert].Color = surfaceColour;
 			m_vertices[vert++].Pos = Vector3((float)i, 0.5f * (float)(m_size - 1), (float)j);
-			m_vertices[vert].Color = Color(0.0f, 0.0f, 1.0f, aLvl);
+			m_vertices[vert].Color = surfaceColour;
 			m_vertices[vert++].Pos = Vector3((float)i, 0.5f * (float)(m_size - 1), (float)(j + 1));
-			m_vertices[vert].Color = Color(0.0f, 0.0f, 1.0f, aLvl);
+			m_vertices[vert].Color = surfaceColour;
 			m_vertices[vert++].Pos = Vector3((float)(i + 1), 0.5f * (float)(m_size - 1), (float)j);
 
-			m_vertices[vert].Color = Color(0.1f, 0.1f, 1.0f, aLvl);
+			m_vertices[vert].Color = surfaceColour;
 			m_vertices[vert++].Pos = Vector3((float)(i + 1), 0.5f * (float)(m_size - 1), (float)j);
-			m_vertices[vert].Color = Color(0.1f, 0.1f, 1.0f, aLvl);
+			m_vertices[vert].Color = surfaceColour;
 			m_vertices[vert++].Pos = Vector3((float)i, 0.5f * (float)(m_size - 1), (float)(j + 1));
-			m_vertices[vert].Color = Color(0.1f, 0.1f, 1.0f, aLvl);
+			m_vertices[vert].Color = surfaceColour;
 			m_vertices[vert++].Pos = Vector3((float)(i + 1), 0.5f * (float)(m_size - 1), (float)(j + 1));
 			
 		}
@@ -117,24 +121,30 @@ void VBPlane::init(int _size, float _scale, ID3D11Device* GD)
 
 
 	//delete[] m_vertices; //this is no longer needed as this is now in the Vertex Buffer
+	TwAddVarRW(m_GD->myBar, "Amplitude", TW_TYPE_FLOAT, &rippleAmp, " min=0 max=20 step=0.01 group= Ripple ");
+	TwAddVarRW(m_GD->myBar, "Frequency", TW_TYPE_FLOAT, &rippleFreq, " min=0 max=30 step=1 group= Ripple ");
+	TwAddVarRW(m_GD->myBar, "Wave Length", TW_TYPE_FLOAT, &rippleWL, " min=0 max=0.5 step=0.01 group= Ripple ");
 }
 
 
 
 void VBPlane::Tick(GameData* GD)
 {
-	TwAddVarRW(GD->myBar, "Amplitude", TW_TYPE_FLOAT, &rippleAmp, " min=0 max=20 step=0.01 group= Ripple ");
-	TwAddVarRW(GD->myBar, "Frequency", TW_TYPE_FLOAT, &rippleFreq, " min=0 max=30 step=1 group= Ripple ");
-	TwAddVarRW(GD->myBar, "Wave Length", TW_TYPE_FLOAT, &rippleWL, " min=0 max=0.5 step=0.01 group= Ripple ");
-
-	
-	
-
 	if (useVerlet)
 	{
+
+
 		if (playerPnt->moving)
-		{
-			currVertices[getLoc(playerPnt->publicPos.x/ m_scale, playerPnt->publicPos.z/m_scale)] -= 0.1f;
+		{ 
+			
+			currVertices[getLoc(playerPnt->publicPos.x/ m_scale, playerPnt->publicPos.z/m_scale)] =disturbance;
+
+			currVertices[getLoc(playerPnt->publicPos.x / m_scale + 1, playerPnt->publicPos.z / m_scale)] = disturbance/4;
+			currVertices[getLoc(playerPnt->publicPos.x / m_scale - 1, playerPnt->publicPos.z / m_scale)] = disturbance/4;
+			currVertices[getLoc(playerPnt->publicPos.x / m_scale, playerPnt->publicPos.z / m_scale + 1)] = disturbance/4;
+			currVertices[getLoc(playerPnt->publicPos.x / m_scale, playerPnt->publicPos.z / m_scale - 1)] = disturbance/4;
+
+
 		}		
 		TransformVerlet(GD);
 
@@ -144,7 +154,7 @@ void VBPlane::Tick(GameData* GD)
 
 		if ((GD->keyboard[DIK_RETURN] & 0x80) && !(GD->prevKeyboard[DIK_RETURN] & 0x80))
 		{
-
+			
 
 			/*for (int j = 0; j < m_numVertices; j++)
 			{
@@ -191,9 +201,9 @@ void VBPlane::Tick(GameData* GD)
 			}
 
 		}
-		
-		TransformSin();
 
+
+		TransformSin();
 
 
 		if (GD->mouse->rgbButtons[0])
@@ -306,10 +316,10 @@ void VBPlane::TransformVerlet(GameData* GD)
 
 	}
 	
-	for (int i = 0; i < m_size; i++)
+	/*for (int i = 0; i < m_size; i++)
 	{
 		newVertices[getLoc(i, 0)] = 0.5f * sin(2.0f * time);
-	}
+	}*/
 
 	for (int i = 0; i < m_numVertices; i++)
 	{
@@ -510,8 +520,6 @@ void VBPlane::TransformSin()
 
 	}*/
 }
-	
-
 
 void VBPlane::Draw(DrawData* _DD)
 {

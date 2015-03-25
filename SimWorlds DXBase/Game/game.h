@@ -19,6 +19,7 @@ class GameObject2D;
 class Camera;
 class Light;
 class TPSCamera;
+class ATBInput;
 struct GameData;
 struct DrawData;
 struct DrawData2D;
@@ -44,6 +45,8 @@ protected:
 
 	Camera* m_cam; //principle camera
 	TPSCamera* m_TPSCam; // TPS camera
+
+	ATBInput* TwBarInputs;
 
 	Light* m_Light; //base light
 

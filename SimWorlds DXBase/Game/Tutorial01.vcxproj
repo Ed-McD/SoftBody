@@ -355,6 +355,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ATBInput.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="CMOGO.cpp" />
     <ClCompile Include="fileVBGO.cpp" />
@@ -374,6 +375,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AntTweakTest.h" />
+    <ClInclude Include="ATBInput.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="CMOGO.h" />
     <ClInclude Include="ConstantBuffer.h" />
