@@ -48,6 +48,7 @@ public:
 
 	Turret_Base* playerPnt;
 	GameData* m_GD;
+	ID3D11Device* m_Device;
 
 	list <Ripple*> myRipples;
 	
@@ -78,6 +79,7 @@ protected:
 	float* newVertices;
 	float* currVertices;
 	float* dummyVertices;
+	
 	
 
 };

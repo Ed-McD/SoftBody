@@ -67,6 +67,10 @@ protected:
 	void BuildVB(ID3D11Device* _GD,int _numVerts, void* _vertices);
 	void BuildDVB(ID3D11Device* _GD, int _numVerts, void* _vertices);
 
+	void Wireframe();
+	
+	
+
 
 };
 

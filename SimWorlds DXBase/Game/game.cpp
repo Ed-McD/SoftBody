@@ -78,10 +78,10 @@ Game::Game(ID3D11Device* _pd3dDevice, HINSTANCE _hInstance) :m_playTime(0), m_my
 
 	m_GD->player = base;
 
-	m_TPSCam = new TPSCamera(0.25f * XM_PI, 640.0f / 480.0f, 1.0f, 10000.0f, base, Vector3::UnitY, Vector3(-200.0f, 100.0f, 0.0f));
+	m_TPSCam = new TPSCamera(0.25f * XM_PI, 640.0f / 480.0f, 1.0f, 10000.0f, base, Vector3::UnitY, Vector3(0.0f, 300.0f, 500.0f));
 	m_GameObjects.push_back(m_TPSCam);
 	
-	m_Light = new Light(Vector3(0.0f, 100.0f, 160.0f), Color(1.0f, 1.0f, 1.0f, 1.0f), Color(0.75f, 0.75f, 0.75f, 0.75f));
+	m_Light = new Light(Vector3(-300.0f, 100.0f, -450.0f), Color(1.0f, 1.0f, 1.0f, 1.0f), Color(0.75f, 0.75f, 0.75f, 0.75f));
 	m_GameObjects.push_back(m_Light);
 
 	//FileVBGO* terrainBox = new FileVBGO("../Assets/terrainTex.txt", _pd3dDevice);

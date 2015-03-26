@@ -23,10 +23,11 @@ void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 	useRippleClass = true;
 	useSinSim = false;
 	useVerlet = !useSinSim;
-	springCoeff = 0.75f;
+	springCoeff = 0.1f;
 	disturbance = 5.0f;
 
 	m_GD = _GD;
+	m_Device = GD;
 
 	float aLvl = 0.25f;
 	Color surfaceColour = {0.0f, 0.0f, 1.0f, aLvl};
@@ -132,17 +133,23 @@ void VBPlane::Tick(GameData* GD)
 {
 	if (useVerlet)
 	{
+		if ((GD->keyboard[DIK_R] & 0x80) && !(GD->prevKeyboard[DIK_R] & 0x80))
+		{
+			memset(newVertices, 0, sizeof(float)*m_size*m_size);
+			memset(currVertices, 0, sizeof(float)*m_size*m_size);
+		}
 
+		
 
 		if (playerPnt->moving)
 		{ 
 			
-			currVertices[getLoc(playerPnt->publicPos.x/ m_scale, playerPnt->publicPos.z/m_scale)] =disturbance;
+			currVertices[getLoc(playerPnt->publicPos.x/ m_scale, playerPnt->publicPos.z/m_scale)] += disturbance;
 
-			currVertices[getLoc(playerPnt->publicPos.x / m_scale + 1, playerPnt->publicPos.z / m_scale)] = disturbance/4;
-			currVertices[getLoc(playerPnt->publicPos.x / m_scale - 1, playerPnt->publicPos.z / m_scale)] = disturbance/4;
-			currVertices[getLoc(playerPnt->publicPos.x / m_scale, playerPnt->publicPos.z / m_scale + 1)] = disturbance/4;
-			currVertices[getLoc(playerPnt->publicPos.x / m_scale, playerPnt->publicPos.z / m_scale - 1)] = disturbance/4;
+			currVertices[getLoc(playerPnt->publicPos.x / m_scale + 1, playerPnt->publicPos.z / m_scale)] -= disturbance/4;
+			currVertices[getLoc(playerPnt->publicPos.x / m_scale - 1, playerPnt->publicPos.z / m_scale)] -= disturbance/4;
+			currVertices[getLoc(playerPnt->publicPos.x / m_scale, playerPnt->publicPos.z / m_scale + 1)] -= disturbance/4;
+			currVertices[getLoc(playerPnt->publicPos.x / m_scale, playerPnt->publicPos.z / m_scale - 1)] -= disturbance/4;
 
 
 		}		
@@ -286,7 +293,7 @@ void VBPlane::Tick(GameData* GD)
 void VBPlane::TransformVerlet(GameData* GD)
 {
 	
-	float verl_dt = 0.001f;
+	float verl_dt = 0.01f;
 	for (int i = 0; i < m_size; i++)
 	{
 

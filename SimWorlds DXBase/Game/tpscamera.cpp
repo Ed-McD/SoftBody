@@ -19,7 +19,7 @@ void TPSCamera::Tick(GameData* _GD)
 	m_target = m_targetObject->GetPos();
 
 	Matrix rotMat = Matrix::CreateRotationY(m_targetObject->GetYaw());
-	m_pos = m_target + Vector3::Transform(m_dpos, rotMat);
+	m_pos = m_target + m_dpos;
 
 	//and then set up proj and view matrices
 	Camera::Tick(_GD);

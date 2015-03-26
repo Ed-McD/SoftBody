@@ -212,11 +212,11 @@ void VBGO::Init(ID3D11Device* _GD)
 	//Setup Raster State
 	D3D11_RASTERIZER_DESC rasterDesc;
 	rasterDesc.AntialiasedLineEnable = false;
-	rasterDesc.CullMode = D3D11_CULL_BACK;
+	rasterDesc.CullMode = D3D11_CULL_NONE;
 	rasterDesc.DepthBias = 0;
 	rasterDesc.DepthBiasClamp = 0.0f;
 	rasterDesc.DepthClipEnable = true;
-	rasterDesc.FillMode = D3D11_FILL_WIREFRAME;
+	rasterDesc.FillMode = D3D11_FILL_WIREFRAME; //D3D11_FILL_WIREFRAME , D3D11_FILL_SOLID
 	rasterDesc.FrontCounterClockwise = true;
 	rasterDesc.MultisampleEnable = false;
 	rasterDesc.ScissorEnable = false;
@@ -302,4 +302,9 @@ void VBGO::BuildDVB(ID3D11Device* _GD, int _numVerts, void* _vertices)
 	ZeroMemory(&InitData, sizeof(InitData));
 	InitData.pSysMem = _vertices;
 	hr = _GD->CreateBuffer(&bd, &InitData, &m_VertexBuffer);
+}
+
+void VBGO::Wireframe()
+{
+	//rasterDesc.FillMode = D3D11_FILL_WIREFRAME;
 }
