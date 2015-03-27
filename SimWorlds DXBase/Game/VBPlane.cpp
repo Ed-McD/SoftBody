@@ -2,7 +2,7 @@
 #include "VBPLane.h"
 #include "drawdata.h"
 #include "Turret_base.h"
-#include "AntTweakTest.h"
+#include <AntTweakBar.h>
 
 void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 {
@@ -25,6 +25,7 @@ void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 	useVerlet = !useSinSim;
 	springCoeff = 0.1f;
 	disturbance = 5.0f;
+	wrapAround = false;
 
 	m_GD = _GD;
 	m_Device = GD;
@@ -122,15 +123,23 @@ void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 
 
 	//delete[] m_vertices; //this is no longer needed as this is now in the Vertex Buffer
+	TwAddVarRW(m_GD->myBar, "Using Sin Based Simulation", TW_TYPE_BOOLCPP, &useSinSim, "group= Main Toggles ");	
+	TwAddVarRO(m_GD->myBar, "Using Verlet Simulation", TW_TYPE_BOOLCPP, &useVerlet, " group= Main Toggles ");
+
 	TwAddVarRW(m_GD->myBar, "Amplitude", TW_TYPE_FLOAT, &rippleAmp, " min=0 max=20 step=0.01 group= Ripple ");
 	TwAddVarRW(m_GD->myBar, "Frequency", TW_TYPE_FLOAT, &rippleFreq, " min=0 max=30 step=1 group= Ripple ");
 	TwAddVarRW(m_GD->myBar, "Wave Length", TW_TYPE_FLOAT, &rippleWL, " min=0 max=0.5 step=0.01 group= Ripple ");
+
+	TwAddVarRW(m_GD->myBar, "Disturbance", TW_TYPE_FLOAT, &disturbance, " min=0 max=10 step=0.5 group= Verlet");
+	TwAddVarRW(m_GD->myBar, "Wave Wrap Around", TW_TYPE_BOOLCPP, &wrapAround, "group= Verlet ");
 }
 
 
 
 void VBPlane::Tick(GameData* GD)
 {
+	useVerlet != useSinSim;
+
 	if (useVerlet)
 	{
 		if ((GD->keyboard[DIK_R] & 0x80) && !(GD->prevKeyboard[DIK_R] & 0x80))
@@ -162,28 +171,6 @@ void VBPlane::Tick(GameData* GD)
 		if ((GD->keyboard[DIK_RETURN] & 0x80) && !(GD->prevKeyboard[DIK_RETURN] & 0x80))
 		{
 			
-
-			/*for (int j = 0; j < m_numVertices; j++)
-			{
-				float xDiff;
-				float zDiff;
-				float playerPosOffset;
-				xDiff = (GD->player->m_pos.x - m_vertices[j].Pos.x);
-				zDiff = (GD->playerPos.z - m_vertices[j].Pos.z);
-				playerPosOffset = sqrtf((zDiff*zDiff) + (xDiff*xDiff));
-
-				float cpxDiff;
-				float cpzDiff;
-				float cpOffset;
-				cpxDiff = (m_vertices[m_centrepoint].Pos.x - GD->player.x);
-				cpzDiff = (m_vertices[m_centrepoint].Pos.z - GD->playerPos.z);
-				cpOffset = sqrtf((cpzDiff*cpzDiff) + (cpxDiff*cpxDiff));
-
-				if (playerPosOffset < cpOffset);
-				{
-					m_centrepoint = j;
-				}
-			}*/
 			if (useRippleClass)
 			{
 				m_centrepoint = rand() % (100000);
@@ -300,7 +287,7 @@ void VBPlane::TransformVerlet(GameData* GD)
 		for (int j = 0; j < m_size; j++)
 		{
 			
-
+			float dampingForce =  0.01f;
 			float UP;
 			float DOWN;
 			float LEFT;
@@ -310,10 +297,11 @@ void VBPlane::TransformVerlet(GameData* GD)
 			LEFT = currVertices[getLoc(i, j-1)];
 			RIGHT = currVertices[getLoc(i, j+1)];
 			
-			float diffGrad = 30.0f *(UP + DOWN + LEFT + RIGHT - 4.0f *currVertices[getLoc(i,j)]);
+			
+			float diffGrad = 10.0f *(UP + DOWN + LEFT + RIGHT - 4.0f *currVertices[getLoc(i,j)]);
 
 
-			newVertices[getLoc(i, j)] = ((2 * currVertices[getLoc(i, j)]) - newVertices[getLoc(i, j)] + (springForce(currVertices[getLoc(i,j)]) * (verl_dt*verl_dt)));
+			newVertices[getLoc(i, j)] = (((2 - dampingForce)* currVertices[getLoc(i, j)]) - (1 - dampingForce)*newVertices[getLoc(i, j)] + (springForce(currVertices[getLoc(i, j)])* (verl_dt*verl_dt)));
 
 			newVertices[getLoc(i, j)] += verl_dt * diffGrad;
 
@@ -323,10 +311,10 @@ void VBPlane::TransformVerlet(GameData* GD)
 
 	}
 	
-	/*for (int i = 0; i < m_size; i++)
+	for (int i = 0; i < m_size; i++)
 	{
 		newVertices[getLoc(i, 0)] = 0.5f * sin(2.0f * time);
-	}*/
+	}
 
 	for (int i = 0; i < m_numVertices; i++)
 	{
@@ -367,27 +355,46 @@ float VBPlane::springForce(float _height)
 
 int VBPlane::getLoc( int _i, int _j)
 {
-	//wrap arounds
-	if (_i == -1)
+	if (wrapAround)
 	{
-		_i = m_size-1;
-		//_i = 0;
+		//Sets to opposite side.
+		if (_i == -1)
+		{
+			_i = m_size - 1;			
+		}
+		if (_i == m_size)
+		{
+			_i = 0;			
+		}
+		if (_j == -1)
+		{
+			_j = m_size - 1;			
+		}
+		if (_j == m_size)
+		{
+			_j = 0;			
+		}
 	}
-	if (_i == m_size)
+	else
 	{
-		_i = 0;
-		//_i = m_size - 1;
-	}
+		//Sets to self
+		if (_i == -1)
+		{
+			_i = 0;
+		}
+		if (_i == m_size)
+		{
+			_i = m_size - 1;
+		}
+		if (_j == -1)
+		{
+			_j = 0;
+		}
+		if (_j == m_size)
+		{
+			_j = m_size - 1;
+		}
 
-	if (_j == -1)
-	{
-		_j = m_size-1;
-		//_j = 0;
-	}
-	if (_j == m_size)
-	{
-		_j = 0;
-		//_j = m_size - 1;
 	}
 
 	int location = _i * m_size + _j;

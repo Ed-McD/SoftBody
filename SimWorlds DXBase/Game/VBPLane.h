@@ -45,6 +45,7 @@ public:
 	bool useSinSim;
 	bool useRippleClass;
 	bool useVerlet;
+	bool wrapAround;
 
 	Turret_Base* playerPnt;
 	GameData* m_GD;

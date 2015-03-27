@@ -8,12 +8,15 @@ class TPSCamera : public Camera
 public:
 	TPSCamera(float _fieldOfView, float _aspectRatio, float _nearPlaneDistance, float _farPlaneDistance, GameObject* _target, Vector3 _up, Vector3 _dpos);
 	virtual ~TPSCamera();
+	
+	float m_rotation;
 
 	virtual void Tick(GameData* GD);
 
 protected:
 	GameObject*	m_targetObject;
 	Vector3	m_dpos;
+	
 };
 
 #endif

@@ -19,6 +19,7 @@
 #include <d3d11_1.h>
 #include <directxcolors.h>
 #include "resource.h"
+#include <AntTweakBar.h>
 #include "game.h" //SS added to create put game manager
 
 using namespace DirectX;
@@ -161,7 +162,10 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
         default:
             return DefWindowProc( hWnd, message, wParam, lParam );
     }
-
+	if (TwEventWin(hWnd, message, wParam, lParam))// send event to AntTweakBar
+	{
+		return 0;
+	}
     return 0;
 }
 

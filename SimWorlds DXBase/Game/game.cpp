@@ -10,7 +10,7 @@
 #include "DDSTextureLoader.h"
 #include "drawdata.h"
 #include "DrawData2D.h"
-#include "AntTweakTest.h"
+#include <AntTweakBar.h>
 #include "ATBInput.h"
 
 using namespace DirectX;
@@ -54,7 +54,8 @@ Game::Game(ID3D11Device* _pd3dDevice, HINSTANCE _hInstance) :m_playTime(0), m_my
 	m_GD = new GameData();
 	m_GD->keyboard = m_keyboardState;
 	m_GD->prevKeyboard = m_prevKeyboardState;
-	m_GD->mouse = &m_mouse_state;
+	m_GD->mouse = &m_mouse_state;	
+	m_GD->prevMouse = &m_prev_mouse_state;
 	m_GD->GS = GS_PLAY_TPS_CAM;
 
 	TwBar *myBar;
@@ -197,7 +198,27 @@ bool Game::update()
 {
 	ReadKeyboard();
 	ReadMouse();
+
+	POINT p;
+	if (GetCursorPos(&p))
+	{
+		if (ScreenToClient(g_hWnd, &p))
+		{
+			TwMouseMotion(p.x, p.y);
+		}
+	}
+	
 	TwBarInputs->processInput(m_GD);
+	
+
+	if ((m_keyboardState[DIK_Q] & 0x80) && !(m_prevKeyboardState[DIK_Q] & 0x80))
+	{
+		m_TPSCam->m_rotation -= (XM_PIDIV4 / 2);
+	}
+	if ((m_keyboardState[DIK_E] & 0x80) && !(m_prevKeyboardState[DIK_E] & 0x80))
+	{
+		m_TPSCam->m_rotation += (XM_PIDIV4 / 2);
+	}
 	
 
 	if (m_keyboardState[DIK_ESCAPE] & 0x80)
@@ -302,6 +323,7 @@ bool Game::ReadKeyboard()
 			return false;
 		}
 	}
+	
 
 	return true;
 
@@ -309,6 +331,8 @@ bool Game::ReadKeyboard()
 
 bool Game::ReadMouse()
 {
+
+	
 	//clear out previous state
 	ZeroMemory(&m_mouse_state, sizeof(m_mouse_state));
 
@@ -326,8 +350,7 @@ bool Game::ReadMouse()
 			return false;
 		}
 	}
-	//TwMouseMotion()
-
+	
 	return true;
 
 }

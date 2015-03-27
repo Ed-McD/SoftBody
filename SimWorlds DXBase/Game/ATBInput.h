@@ -1,6 +1,6 @@
 #pragma once
 
-#include "AntTweakTest.h"
+#include <AntTweakBar.h>
 #include "gamedata.h"
 #include "DXUT.h"
 
@@ -11,6 +11,6 @@ public:
 	~ATBInput(){};
 
 	void processInput(GameData* GD);
-
+	
 
 };

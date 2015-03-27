@@ -64,6 +64,7 @@ protected:
 	unsigned char			m_prevKeyboardState[256];
 	IDirectInputDevice8*	m_pMouse;
 	DIMOUSESTATE			m_mouse_state;
+	DIMOUSESTATE			m_prev_mouse_state;
 
 	//my GameData
 	GameData* m_GD;

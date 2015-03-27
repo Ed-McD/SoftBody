@@ -6,6 +6,10 @@ TPSCamera::TPSCamera(float _fieldOfView, float _aspectRatio, float _nearPlaneDis
 {
 	m_targetObject = _target;
 	m_dpos = _dpos;
+	m_rotation = 0;
+	
+
+
 }
 
 TPSCamera::~TPSCamera()
@@ -18,8 +22,9 @@ void TPSCamera::Tick(GameData* _GD)
 	//Set up position of camera and target position of camera based on new position and orientation of target object
 	m_target = m_targetObject->GetPos();
 
-	Matrix rotMat = Matrix::CreateRotationY(m_targetObject->GetYaw());
-	m_pos = m_target + m_dpos;
+	Matrix rotMat = Matrix::CreateRotationY(m_rotation);
+	m_pos = m_target + Vector3::Transform(m_dpos, rotMat);
+	
 
 	//and then set up proj and view matrices
 	Camera::Tick(_GD);
