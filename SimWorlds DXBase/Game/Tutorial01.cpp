@@ -147,6 +147,11 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 {
     PAINTSTRUCT ps;
     HDC hdc;
+	
+	if (TwEventWin(hWnd, message, wParam, lParam))// send event to AntTweakBar
+	{
+		return 0;
+	}
 
     switch( message )
     {
@@ -162,10 +167,7 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
         default:
             return DefWindowProc( hWnd, message, wParam, lParam );
     }
-	if (TwEventWin(hWnd, message, wParam, lParam))// send event to AntTweakBar
-	{
-		return 0;
-	}
+	
     return 0;
 }
 

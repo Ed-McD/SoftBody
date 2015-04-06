@@ -355,7 +355,6 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ATBInput.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="CMOGO.cpp" />
     <ClCompile Include="fileVBGO.cpp" />
@@ -374,7 +373,6 @@
     <ClCompile Include="VBPlane.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ATBInput.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="CMOGO.h" />
     <ClInclude Include="ConstantBuffer.h" />

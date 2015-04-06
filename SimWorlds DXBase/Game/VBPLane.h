@@ -4,6 +4,7 @@
 #include "vertex.h"
 #include "Ripple.h"
 #include <list>
+#include <vector>
 
 
 class Turret_Base;
@@ -32,6 +33,11 @@ public:
 
 	float m_scale;
 	float disturbance;
+	float WaveSpeed;
+	float dampingForce;
+	float verletAmp;
+	float verletFreq;
+		
 
 	float verletDamping;
 	float springCoeff;
@@ -46,12 +52,17 @@ public:
 	bool useRippleClass;
 	bool useVerlet;
 	bool wrapAround;
+	bool recalculateNorms;
+	bool normsReset;
+	bool verletSin;
+
 
 	Turret_Base* playerPnt;
 	GameData* m_GD;
 	ID3D11Device* m_Device;
 
 	list <Ripple*> myRipples;
+	vector <Vector3> initNormals;
 	
 	VBPlane(){};
 	virtual ~VBPlane()

@@ -11,7 +11,7 @@
 #include "drawdata.h"
 #include "DrawData2D.h"
 #include <AntTweakBar.h>
-#include "ATBInput.h"
+
 
 using namespace DirectX;
 
@@ -59,10 +59,10 @@ Game::Game(ID3D11Device* _pd3dDevice, HINSTANCE _hInstance) :m_playTime(0), m_my
 	m_GD->GS = GS_PLAY_TPS_CAM;
 
 	TwBar *myBar;
-	myBar = TwNewBar("Variable Menu");
+	myBar = TwNewBar("VariableMenu");
+	TwDefine(" VariableMenu color='255 0 0' help ='Use the mouse to control this menu.' ");
 	m_GD->myBar = myBar;
 	
-	TwBarInputs = new ATBInput();
 	
 
 	//create a base camera
@@ -199,16 +199,7 @@ bool Game::update()
 	ReadKeyboard();
 	ReadMouse();
 
-	POINT p;
-	if (GetCursorPos(&p))
-	{
-		if (ScreenToClient(g_hWnd, &p))
-		{
-			TwMouseMotion(p.x, p.y);
-		}
-	}
 	
-	TwBarInputs->processInput(m_GD);
 	
 
 	if ((m_keyboardState[DIK_Q] & 0x80) && !(m_prevKeyboardState[DIK_Q] & 0x80))
@@ -231,17 +222,7 @@ bool Game::update()
 		return false;
 	}
 
-	if ((m_keyboardState[DIK_SPACE] & 0x80) && !(m_prevKeyboardState[DIK_SPACE] & 0x80))
-	{
-		if (m_GD->GS == GS_PLAY_MAIN_CAM)
-		{
-			m_GD->GS = GS_PLAY_TPS_CAM;
-		}
-		else
-		{
-			m_GD->GS = GS_PLAY_MAIN_CAM;
-		}
-	}
+	
 
 
 	//calculate frame time-step dt for passing down to game objects

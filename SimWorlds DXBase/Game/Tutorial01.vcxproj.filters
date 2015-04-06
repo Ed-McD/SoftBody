@@ -109,9 +109,6 @@
     <ClInclude Include="Ripple.h">
       <Filter>Engine\GameObject Headers</Filter>
     </ClInclude>
-    <ClInclude Include="ATBInput.h">
-      <Filter>Engine\Source Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Tutorial01.rc">
@@ -166,9 +163,6 @@
     </ClCompile>
     <ClCompile Include="Ripple.cpp">
       <Filter>Engine\GameObject Source</Filter>
-    </ClCompile>
-    <ClCompile Include="ATBInput.cpp">
-      <Filter>Engine\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -17,16 +17,23 @@ void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 	rippleFalloff = 0.75f;
 	m_scale = _scale;
 	m_diagonal = 0;
-	m_ripple = false;
-	m_waves = true;
+	
 	rippleCount = 0;
-	useRippleClass = true;
-	useSinSim = false;
-	useVerlet = !useSinSim;
+
+	verletAmp = 0.5f;
+	verletFreq = 2.0f;
+	
 	springCoeff = 0.1f;
 	disturbance = 5.0f;
 	wrapAround = false;
-
+	WaveSpeed = 10.0f;
+	dampingForce = 0.01f;
+	recalculateNorms = true;
+	m_ripple = false;
+	m_waves = true; 
+	useRippleClass = true;
+	useSinSim = false; 
+	useVerlet = !useSinSim;
 	m_GD = _GD;
 	m_Device = GD;
 
@@ -113,6 +120,7 @@ void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 		m_vertices[V1].Norm = norm;
 		m_vertices[V2].Norm = norm;
 		m_vertices[V3].Norm = norm;
+		initNormals.push_back(norm);
 	}
 
 
@@ -125,20 +133,44 @@ void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 	//delete[] m_vertices; //this is no longer needed as this is now in the Vertex Buffer
 	TwAddVarRW(m_GD->myBar, "Using Sin Based Simulation", TW_TYPE_BOOLCPP, &useSinSim, "group= Main Toggles ");	
 	TwAddVarRO(m_GD->myBar, "Using Verlet Simulation", TW_TYPE_BOOLCPP, &useVerlet, " group= Main Toggles ");
+	TwAddVarRW(m_GD->myBar, "Recalculate Normals", TW_TYPE_BOOLCPP, &recalculateNorms, " group= Main Toggles ");
 
-	TwAddVarRW(m_GD->myBar, "Amplitude", TW_TYPE_FLOAT, &rippleAmp, " min=0 max=20 step=0.01 group= Ripple ");
-	TwAddVarRW(m_GD->myBar, "Frequency", TW_TYPE_FLOAT, &rippleFreq, " min=0 max=30 step=1 group= Ripple ");
-	TwAddVarRW(m_GD->myBar, "Wave Length", TW_TYPE_FLOAT, &rippleWL, " min=0 max=0.5 step=0.01 group= Ripple ");
+	TwAddVarRW(m_GD->myBar, "Amplitude", TW_TYPE_FLOAT, &amp, " min=0 max=20 step=0.01 group= SinBased");
+	TwAddVarRW(m_GD->myBar, "Frequency", TW_TYPE_FLOAT, &freq, " min=0 max=20 step=0.01 group= SinBased");
+	TwAddVarRW(m_GD->myBar, "Wave Length", TW_TYPE_FLOAT, &waveLength, " min=0 max=20 step=0.01 group= SinBased");
 
+	TwAddVarRW(m_GD->myBar, "Ripple Amplitude", TW_TYPE_FLOAT, &rippleAmp, " min=0 max=20 step=0.01 group= Ripple ");
+	TwAddVarRW(m_GD->myBar, "Ripple Frequency", TW_TYPE_FLOAT, &rippleFreq, " min=0 max=30 step=1 group= Ripple ");
+	TwAddVarRW(m_GD->myBar, "Ripple Wavelength", TW_TYPE_FLOAT, &rippleWL, " min=0 max=0.5 step=0.01 group= Ripple ");
+	TwDefine("VariableMenu/Ripple group=SinBased");
+	
+
+	TwAddVarRW(m_GD->myBar, "Wave Speed", TW_TYPE_FLOAT, &WaveSpeed, " min=0 max=40 step=0.1 group= Verlet");
 	TwAddVarRW(m_GD->myBar, "Disturbance", TW_TYPE_FLOAT, &disturbance, " min=0 max=10 step=0.5 group= Verlet");
+	TwAddVarRW(m_GD->myBar, "Damping Force", TW_TYPE_FLOAT, &dampingForce, " min=0 max=0.2 step=0.001 group= Verlet");
 	TwAddVarRW(m_GD->myBar, "Wave Wrap Around", TW_TYPE_BOOLCPP, &wrapAround, "group= Verlet ");
+	TwAddVarRW(m_GD->myBar, "Sin Wave propogation", TW_TYPE_BOOLCPP, &verletSin, " group= Verlet ");
+	TwAddVarRW(m_GD->myBar, "Verlet Amplitude", TW_TYPE_FLOAT, &verletAmp, " min=0 max=5 step=0.1 group= VerletSin ");
+	TwAddVarRW(m_GD->myBar, "Verlet Frequency", TW_TYPE_FLOAT, &verletFreq, " min=0 max=10 step=0.5 group= VerletSin ");
+
+
+	TwDefine("VariableMenu/VerletSin group=Verlet");
+	
+
 }
 
 
 
 void VBPlane::Tick(GameData* GD)
 {
-	useVerlet != useSinSim;
+	if (useSinSim)
+	{
+		useVerlet = false;
+	}
+	else
+	{
+		useVerlet = true;
+	}
 
 	if (useVerlet)
 	{
@@ -200,31 +232,9 @@ void VBPlane::Tick(GameData* GD)
 		TransformSin();
 
 
-		if (GD->mouse->rgbButtons[0])
-		{
-			freq = freq + 1.0f;
-		}
-		if (GD->mouse->rgbButtons[1])
-		{
-			freq = freq - 1.0f;
-		}
-		if (GD->keyboard[DIK_Q] & 0x80)
-		{
-			amp = amp + 1.0f;
-		}
-		if (GD->keyboard[DIK_E] & 0x80)
-		{
-			amp = amp - 1.0f;
-		}
-		if (GD->keyboard[DIK_A] & 0x80)
-		{
-			waveLength = waveLength + 0.0005f;
-		}
-		if (GD->keyboard[DIK_D] & 0x80)
-		{
-			waveLength = waveLength - 0.0005f;
-		}
-		if (GD->keyboard[DIK_U] & 0x80)
+		
+		
+		/*if (GD->keyboard[DIK_U] & 0x80)
 		{
 			rippleFreq = rippleFreq + 1.0f;
 		}
@@ -247,7 +257,7 @@ void VBPlane::Tick(GameData* GD)
 		if (GD->keyboard[DIK_M] & 0x80)
 		{
 			rippleWL = rippleWL - 0.0005f;
-		}
+		}*/
 		if ((GD->keyboard[DIK_LSHIFT] & 0x80) && !(GD->prevKeyboard[DIK_LSHIFT] & 0x80))
 		{
 			m_diagonal++;
@@ -263,15 +273,53 @@ void VBPlane::Tick(GameData* GD)
 			rippleAmp = 2.5f;
 			rippleWL = 0.025f;
 		}
-		if ((GD->keyboard[DIK_W] & 0x80) && !(GD->prevKeyboard[DIK_W] & 0x80))
+		/*if ((GD->keyboard[DIK_W] & 0x80) && !(GD->prevKeyboard[DIK_W] & 0x80))
 		{
 			m_waves = !m_waves;
 		}
 		if ((GD->keyboard[DIK_X] & 0x80) && !(GD->prevKeyboard[DIK_X] & 0x80))
 		{
 			m_ripple = !m_ripple;
+		}*/
+	}
+
+	if (recalculateNorms)
+	{ 
+		//calculate the normals for the basic lighting in the base shader
+		for (int i = 0; i < m_numPrims; i++)
+		{
+			WORD V1 = 3 * i;
+			WORD V2 = 3 * i + 1;
+			WORD V3 = 3 * i + 2;
+
+			//build normals
+			Vector3 norm;
+			Vector3 vec1 = m_vertices[V1].Pos - m_vertices[V2].Pos;
+			Vector3 vec2 = m_vertices[V3].Pos - m_vertices[V2].Pos;
+			norm = vec1.Cross(vec2);
+			norm.Normalize();
+
+			m_vertices[V1].Norm = norm;
+			m_vertices[V2].Norm = norm;
+			m_vertices[V3].Norm = norm;
 		}
-	}	
+		normsReset = false;
+	}
+	else if (!normsReset)
+	{
+		for (int i = 0; i < m_numPrims; i++)
+		{
+			WORD V1 = 3 * i;
+			WORD V2 = 3 * i + 1;
+			WORD V3 = 3 * i + 2;
+
+			m_vertices[V1].Norm = initNormals[i];
+			m_vertices[V2].Norm = initNormals[i];
+			m_vertices[V3].Norm = initNormals[i];
+		}
+		normsReset = true;
+	}
+	
 	
 	time += GD->dt;
 	VBGO::Tick(GD);
@@ -287,7 +335,7 @@ void VBPlane::TransformVerlet(GameData* GD)
 		for (int j = 0; j < m_size; j++)
 		{
 			
-			float dampingForce =  0.01f;
+			
 			float UP;
 			float DOWN;
 			float LEFT;
@@ -298,7 +346,7 @@ void VBPlane::TransformVerlet(GameData* GD)
 			RIGHT = currVertices[getLoc(i, j+1)];
 			
 			
-			float diffGrad = 10.0f *(UP + DOWN + LEFT + RIGHT - 4.0f *currVertices[getLoc(i,j)]);
+			float diffGrad = WaveSpeed *(UP + DOWN + LEFT + RIGHT - 4.0f *currVertices[getLoc(i,j)]);
 
 
 			newVertices[getLoc(i, j)] = (((2 - dampingForce)* currVertices[getLoc(i, j)]) - (1 - dampingForce)*newVertices[getLoc(i, j)] + (springForce(currVertices[getLoc(i, j)])* (verl_dt*verl_dt)));
@@ -310,10 +358,17 @@ void VBPlane::TransformVerlet(GameData* GD)
 		}
 
 	}
-	
-	for (int i = 0; i < m_size; i++)
+	if (verletSin)
+	{ 
+		TwDefine("VariableMenu/VerletSin opened=true");
+		for (int i = 0; i < m_size; i++)
+		{
+			newVertices[getLoc(i, 0)] = verletAmp * sin(verletFreq * time);
+		}
+	}
+	else
 	{
-		newVertices[getLoc(i, 0)] = 0.5f * sin(2.0f * time);
+		TwDefine("VariableMenu/VerletSin opened=false");
 	}
 
 	for (int i = 0; i < m_numVertices; i++)
@@ -327,8 +382,7 @@ void VBPlane::TransformVerlet(GameData* GD)
 	newVertices = currVertices;
 	currVertices = dummyVertices;
 
-
-
+	
 
 
 }
@@ -486,53 +540,6 @@ void VBPlane::TransformSin()
 			}			
 		}
 	}
-
-
-	
-
-
-	//calculate the normals for the basic lighting in the base shader
-	for (int i = 0; i < m_numPrims; i++)
-	{
-		WORD V1 = 3 * i;
-		WORD V2 = 3 * i + 1;
-		WORD V3 = 3 * i + 2;
-
-		//build normals
-		Vector3 norm;
-		Vector3 vec1 = m_vertices[V1].Pos - m_vertices[V2].Pos;
-		Vector3 vec2 = m_vertices[V3].Pos - m_vertices[V2].Pos;
-		norm = vec1.Cross(vec2);
-		norm.Normalize();
-
-		m_vertices[V1].Norm = norm;
-		m_vertices[V2].Norm = norm;
-		m_vertices[V3].Norm = norm;
-	}
-	
-
-
-
-	/*for (int i = 0; i < m_numVertices; i++)
-	{
-		float sineWave = amp * sin(((2 * XM_PI*freq)*time) + phase);
-
-		float vertPos = m_vertices[i].Pos.y;
-
-		float newPos = vertPos + sineWave;
-		
-		if (i % 2 == 0)
-		{
-			m_vertices[i].Pos.y = newPos;
-			phase = phase + (3 * i);
-		}
-		else
-		{
-			m_vertices[i].Pos.y = - newPos;
-			phase = phase + (3 * i);
-		}
-
-	}*/
 }
 
 void VBPlane::Draw(DrawData* _DD)
