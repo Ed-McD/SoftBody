@@ -25,7 +25,7 @@ void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 	
 	springCoeff = 0.1f;
 	disturbance = 5.0f;
-	wrapAround = false;
+	
 	WaveSpeed = 10.0f;
 	dampingForce = 0.01f;
 	recalculateNorms = true;
@@ -33,9 +33,12 @@ void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 	m_waves = true; 
 	useRippleClass = true;
 	useSinSim = false; 
+	wrapAround = false;
 	useVerlet = !useSinSim;
 	m_GD = _GD;
 	m_Device = GD;
+
+	
 
 	float aLvl = 0.25f;
 	Color surfaceColour = {0.0f, 0.0f, 1.0f, aLvl};
@@ -126,6 +129,7 @@ void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 
 	BuildIB(GD, indices);
 	BuildDVB(GD, numVerts, m_vertices);
+	BuildWFRaster(GD);
 
 	//currVertices[getLoc(m_size / 2, m_size / 2)] += 1.0f;
 
@@ -134,7 +138,10 @@ void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 	TwAddVarRW(m_GD->myBar, "Using Sin Based Simulation", TW_TYPE_BOOLCPP, &useSinSim, "group= Main Toggles ");	
 	TwAddVarRO(m_GD->myBar, "Using Verlet Simulation", TW_TYPE_BOOLCPP, &useVerlet, " group= Main Toggles ");
 	TwAddVarRW(m_GD->myBar, "Recalculate Normals", TW_TYPE_BOOLCPP, &recalculateNorms, " group= Main Toggles ");
+	TwAddVarRW(m_GD->myBar, "WireFrame", TW_TYPE_BOOLCPP, &wireframe, " group= Main Toggles ");
+	
 
+	TwAddVarRW(m_GD->myBar, "Wave direction", TW_TYPE_INT8, &m_diagonal, "min = 0 max = 3 step = 1 group= SinBased ");
 	TwAddVarRW(m_GD->myBar, "Amplitude", TW_TYPE_FLOAT, &amp, " min=0 max=20 step=0.01 group= SinBased");
 	TwAddVarRW(m_GD->myBar, "Frequency", TW_TYPE_FLOAT, &freq, " min=0 max=20 step=0.01 group= SinBased");
 	TwAddVarRW(m_GD->myBar, "Wave Length", TW_TYPE_FLOAT, &waveLength, " min=0 max=20 step=0.01 group= SinBased");
@@ -142,16 +149,21 @@ void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 	TwAddVarRW(m_GD->myBar, "Ripple Amplitude", TW_TYPE_FLOAT, &rippleAmp, " min=0 max=20 step=0.01 group= Ripple ");
 	TwAddVarRW(m_GD->myBar, "Ripple Frequency", TW_TYPE_FLOAT, &rippleFreq, " min=0 max=30 step=1 group= Ripple ");
 	TwAddVarRW(m_GD->myBar, "Ripple Wavelength", TW_TYPE_FLOAT, &rippleWL, " min=0 max=0.5 step=0.01 group= Ripple ");
-	TwDefine("VariableMenu/Ripple group=SinBased");
-	
+	TwAddVarRW(m_GD->myBar, "Ripple Falloff", TW_TYPE_FLOAT, &rippleFalloff, " min=0 max=2 step=0.01 group= Ripple ");
 
-	TwAddVarRW(m_GD->myBar, "Wave Speed", TW_TYPE_FLOAT, &WaveSpeed, " min=0 max=40 step=0.1 group= Verlet");
+	TwDefine("VariableMenu/Ripple group=SinBased");
+	TwDefine("VariableMenu/Ripple label = 'Ripple (Press Enter to create a ripple)'");
+
+	TwAddVarRW(m_GD->myBar, "WaveSpeed", TW_TYPE_FLOAT, &WaveSpeed, " min=0 max=40 step=0.05 group= Verlet label = 'Wave Speed' ");
 	TwAddVarRW(m_GD->myBar, "Disturbance", TW_TYPE_FLOAT, &disturbance, " min=0 max=10 step=0.5 group= Verlet");
 	TwAddVarRW(m_GD->myBar, "Damping Force", TW_TYPE_FLOAT, &dampingForce, " min=0 max=0.2 step=0.001 group= Verlet");
 	TwAddVarRW(m_GD->myBar, "Wave Wrap Around", TW_TYPE_BOOLCPP, &wrapAround, "group= Verlet ");
+	TwAddVarRW(m_GD->myBar, "Spring Coefficient", TW_TYPE_FLOAT, &springCoeff, "min=0 max=1 step = 0.01 group= Verlet ");
+
 	TwAddVarRW(m_GD->myBar, "Sin Wave propogation", TW_TYPE_BOOLCPP, &verletSin, " group= Verlet ");
 	TwAddVarRW(m_GD->myBar, "Verlet Amplitude", TW_TYPE_FLOAT, &verletAmp, " min=0 max=5 step=0.1 group= VerletSin ");
 	TwAddVarRW(m_GD->myBar, "Verlet Frequency", TW_TYPE_FLOAT, &verletFreq, " min=0 max=10 step=0.5 group= VerletSin ");
+	
 
 
 	TwDefine("VariableMenu/VerletSin group=Verlet");
@@ -163,13 +175,26 @@ void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 
 void VBPlane::Tick(GameData* GD)
 {
+
+
+	if (WaveSpeed >= 5)
+	{
+		TwDefine("VariableMenu/WaveSpeed step = 1.0");
+	}
+	else
+	{
+		TwDefine("VariableMenu/WaveSpeed step = 0.05");
+	}
+
 	if (useSinSim)
 	{
 		useVerlet = false;
+		m_ripple = true;
 	}
 	else
 	{
 		useVerlet = true;
+		m_ripple = false;
 	}
 
 	if (useVerlet)
@@ -211,14 +236,13 @@ void VBPlane::Tick(GameData* GD)
 				rippleCount++;
 			}
 
-
 		}
 
 		for (list<Ripple *>::iterator it = myRipples.begin(); it != myRipples.end(); it++)
 		{
 
 			(*it)->m_time += m_dt;
-			(*it)->m_initAmp -= 0.01f;
+			(*it)->m_initAmp -= (rippleFalloff *0.01f);
 			if ((*it)->m_initAmp < 0.0f)
 			{
 
@@ -231,56 +255,16 @@ void VBPlane::Tick(GameData* GD)
 
 		TransformSin();
 
-
 		
-		
-		/*if (GD->keyboard[DIK_U] & 0x80)
-		{
-			rippleFreq = rippleFreq + 1.0f;
-		}
-		if (GD->keyboard[DIK_I] & 0x80)
-		{
-			rippleFreq = rippleFreq - 1.0f;
-		}
-		if (GD->keyboard[DIK_J] & 0x80)
-		{
-			rippleAmp = rippleAmp + 1.0f;
-		}
-		if (GD->keyboard[DIK_K] & 0x80)
-		{
-			rippleAmp = rippleAmp - 1.0f;
-		}
-		if (GD->keyboard[DIK_N] & 0x80)
-		{
-			rippleWL = rippleWL + 0.0005f;
-		}
-		if (GD->keyboard[DIK_M] & 0x80)
-		{
-			rippleWL = rippleWL - 0.0005f;
-		}*/
-		if ((GD->keyboard[DIK_LSHIFT] & 0x80) && !(GD->prevKeyboard[DIK_LSHIFT] & 0x80))
-		{
-			m_diagonal++;
-			if (m_diagonal > 3)
-				m_diagonal = 0;
-		}
 		if ((GD->keyboard[DIK_R] & 0x80) && !(GD->prevKeyboard[DIK_R] & 0x80)) //Reset to default values
 		{
-			freq = 2.0f;
-			amp = 2.5f;
-			waveLength = 0.025f;
-			rippleFreq = 2.0f;
-			rippleAmp = 2.5f;
-			rippleWL = 0.025f;
+			myRipples.clear();
 		}
-		/*if ((GD->keyboard[DIK_W] & 0x80) && !(GD->prevKeyboard[DIK_W] & 0x80))
-		{
-			m_waves = !m_waves;
-		}
+		
 		if ((GD->keyboard[DIK_X] & 0x80) && !(GD->prevKeyboard[DIK_X] & 0x80))
 		{
 			m_ripple = !m_ripple;
-		}*/
+		}
 	}
 
 	if (recalculateNorms)

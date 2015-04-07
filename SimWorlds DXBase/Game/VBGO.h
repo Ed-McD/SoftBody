@@ -19,6 +19,9 @@ public:
 
 	static void UpdateConstantBuffer(DrawData* _DD);
 
+	bool wireframe = false;
+	
+
 protected:
 
 	//Direct X information for the model for this GameObject
@@ -27,6 +30,8 @@ protected:
 	UINT m_numPrims;
 
 	D3D_PRIMITIVE_TOPOLOGY m_topology;
+
+	
 
 	//default vertexshader
 	static ID3D11VertexShader*     s_pVertexShader;
@@ -66,11 +71,8 @@ protected:
 	//once populated build a Vertex Buffer
 	void BuildVB(ID3D11Device* _GD,int _numVerts, void* _vertices);
 	void BuildDVB(ID3D11Device* _GD, int _numVerts, void* _vertices);
-
-	void Wireframe();
 	
-	
-
+	void BuildWFRaster(ID3D11Device* _GD);
 
 };
 

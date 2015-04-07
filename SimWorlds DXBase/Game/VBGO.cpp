@@ -45,7 +45,7 @@ VBGO::VBGO()
 	m_pConstantBuffer	= nullptr;
 	m_pCB				= nullptr;
 	m_pSampler			= nullptr;
-	m_pRasterState = nullptr;
+	m_pRasterState		= nullptr;
 
 	m_topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
@@ -76,8 +76,18 @@ void VBGO::Tick(GameData* _GD)
 
 void VBGO::Draw(DrawData* _DD)
 {
+
+	ID3D11RasterizerState* useRasterS;
 	//set raster state
-	ID3D11RasterizerState* useRasterS = m_pRasterState ? m_pRasterState : s_pRasterState;
+	if (wireframe)
+	{
+		useRasterS = m_pRasterState ? m_pRasterState : s_pRasterState;
+	}
+	else
+	{
+		useRasterS = s_pRasterState;
+	}
+	
 	_DD->pd3dImmediateContext->RSSetState(useRasterS);
 
 	//set standard Constant Buffer to match this object
@@ -224,6 +234,9 @@ void VBGO::Init(ID3D11Device* _GD)
 
 	// Create the rasterizer state from the description we just filled out.
 	hr = _GD->CreateRasterizerState(&rasterDesc, &s_pRasterState);
+
+
+
 }
 
 void VBGO::UpdateConstantBuffer(DrawData* _DD)
@@ -304,7 +317,22 @@ void VBGO::BuildDVB(ID3D11Device* _GD, int _numVerts, void* _vertices)
 	hr = _GD->CreateBuffer(&bd, &InitData, &m_VertexBuffer);
 }
 
-void VBGO::Wireframe()
+void VBGO::BuildWFRaster(ID3D11Device* _GD)
 {
-	//rasterDesc.FillMode = D3D11_FILL_WIREFRAME;
+	HRESULT hr = S_OK;
+
+	//Setup Raster State
+	D3D11_RASTERIZER_DESC rasterDesc;
+	rasterDesc.AntialiasedLineEnable = false;
+	rasterDesc.CullMode = D3D11_CULL_NONE;
+	rasterDesc.DepthBias = 0;
+	rasterDesc.DepthBiasClamp = 0.0f;
+	rasterDesc.DepthClipEnable = true;
+	rasterDesc.FillMode = D3D11_FILL_WIREFRAME; //D3D11_FILL_WIREFRAME , D3D11_FILL_SOLID
+	rasterDesc.FrontCounterClockwise = true;
+	rasterDesc.MultisampleEnable = false;
+	rasterDesc.ScissorEnable = false;
+	rasterDesc.SlopeScaledDepthBias = 0.0f;
+
+	hr = _GD->CreateRasterizerState(&rasterDesc, &m_pRasterState);
 }

@@ -55,6 +55,7 @@ public:
 	bool recalculateNorms;
 	bool normsReset;
 	bool verletSin;
+	
 
 
 	Turret_Base* playerPnt;

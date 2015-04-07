@@ -60,7 +60,7 @@ Game::Game(ID3D11Device* _pd3dDevice, HINSTANCE _hInstance) :m_playTime(0), m_my
 
 	TwBar *myBar;
 	myBar = TwNewBar("VariableMenu");
-	TwDefine(" VariableMenu color='255 0 0' help ='Use the mouse to control this menu.' ");
+	TwDefine(" VariableMenu color='0 0 0' help ='Use the mouse to control this menu.' ");
 	m_GD->myBar = myBar;
 	
 	
@@ -217,10 +217,10 @@ bool Game::update()
 		return false;
 	}
 
-	if (m_mouse_state.rgbButtons[2] & 0x80)
+	/*if (m_mouse_state.rgbButtons[2] & 0x80)
 	{
 		return false;
-	}
+	}*/
 
 	
 
