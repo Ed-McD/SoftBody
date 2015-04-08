@@ -67,11 +67,11 @@ int WINAPI wWinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
     if( FAILED( InitWindow( hInstance, nCmdShow ) ) )
         return 0;
 
-    if( FAILED( InitDevice() ) )
-    {
-        CleanupDevice();
-        return 0;
-    }
+	if (FAILED(InitDevice()))
+	{
+		CleanupDevice();
+		return 0;
+	}
 
     // Main message loop
     MSG msg = {0};

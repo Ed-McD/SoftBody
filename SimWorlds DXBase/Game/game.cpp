@@ -19,9 +19,20 @@ extern HWND g_hWnd;
 
 Game::Game(ID3D11Device* _pd3dDevice, HINSTANCE _hInstance) :m_playTime(0), m_myEF(nullptr)
 {
-	/* initialize random seed: */
+
+	
+	// initialize random seed
 	srand(time(NULL));
 
+	//Get the window size to send to AntTweakBar
+	RECT rect;
+	if (GetWindowRect(g_hWnd, &rect))
+	{
+		menuWidth = rect.right - rect.left;
+		menuHeight = rect.bottom - rect.top;
+	}
+
+	//Initialize ATB and give it the window size
 	TwInit(TW_DIRECT3D11,_pd3dDevice);
 	TwWindowSize(menuWidth, menuHeight);
 
@@ -58,10 +69,14 @@ Game::Game(ID3D11Device* _pd3dDevice, HINSTANCE _hInstance) :m_playTime(0), m_my
 	m_GD->prevMouse = &m_prev_mouse_state;
 	m_GD->GS = GS_PLAY_TPS_CAM;
 
+	//Create a new Tweak bar for the variables and set up its properties.
 	TwBar *myBar;
 	myBar = TwNewBar("VariableMenu");
-	TwDefine(" VariableMenu color='0 0 0' help ='Use the mouse to control this menu.' ");
-	m_GD->myBar = myBar;
+	TwDefine(" VariableMenu help ='The variables in this menu will alter the propertiees of the simulation.' ");
+	TwDefine(" VariableMenu color='0 0 0' movable = false contained = true size = '300 450 ' resizable = false");
+	TwDefine(" GLOBAL iconmargin='0 50' help = `Use the mouse to control the menus. \nUse 'Q' and 'E' to rotate the camera around the player model and 'R' to reset the vertex hieghts to 0. `");
+	TwDefine(" TW_HELP contained = true opened = true ");
+	m_GD->myBar = myBar; //Set the GameData pointer to the tweakbar
 	
 	
 
@@ -70,36 +85,23 @@ Game::Game(ID3D11Device* _pd3dDevice, HINSTANCE _hInstance) :m_playTime(0), m_my
 	m_cam->SetPos( Vector3(0.0f, 300.0f,300.0f) );
 	m_GameObjects.push_back(m_cam);
 
-	Terrain* terrain = new Terrain("table.cmo", _pd3dDevice, m_myEF,Vector3(100.0f,0.0f,100.0f), 0.0f, 0.0f, 0.0f, 0.25f * Vector3::One);
-	m_GameObjects.push_back(terrain);
+	
 
 	Turret_Base* base = new Turret_Base("treasure_chest.cmo", _pd3dDevice, m_myEF);
 	m_GameObjects.push_back(base);
 	base->SetPos(Vector3(0.0f, 0.0f, 0.0f));
 
+	//set the gamedata pointer to the player.
 	m_GD->player = base;
 
 	m_TPSCam = new TPSCamera(0.25f * XM_PI, 640.0f / 480.0f, 1.0f, 10000.0f, base, Vector3::UnitY, Vector3(0.0f, 300.0f, 500.0f));
 	m_GameObjects.push_back(m_TPSCam);
 	
-	m_Light = new Light(Vector3(-300.0f, 100.0f, -450.0f), Color(1.0f, 1.0f, 1.0f, 1.0f), Color(0.75f, 0.75f, 0.75f, 0.75f));
+	m_Light = new Light(Vector3(-300.0f, 100.0f, -450.0f), Color(1.0f, 1.0f, 1.0f, 1.0f), Color(0.8f, 0.8f, 0.8f, 0.8f));
 	m_GameObjects.push_back(m_Light);
 
-	//FileVBGO* terrainBox = new FileVBGO("../Assets/terrainTex.txt", _pd3dDevice);
-	//m_GameObjects.push_back(terrainBox);
-
-	FileVBGO* Box = new FileVBGO("../Assets/cube.txt", _pd3dDevice);
-	m_GameObjects.push_back(Box);
-	Box->SetPos(Vector3(0.0f, 0.0f, -100.0f));
-	Box->SetPitch( XM_PIDIV4 );
-	Box->SetScale( 20.0f );
-
-	/*VBCube* cube = new VBCube();
-	cube->init(11, _pd3dDevice);
-	cube->SetPos(Vector3(100.0f, 0.0f, 0.0f));
-	cube->SetScale(4.0f);
-	m_GameObjects.push_back(cube);*/
 	
+	//Create a VB object as a plane
 	float planeScale = 4.0f;
 	VBPlane* plane = new VBPlane();
 	plane->init(100, planeScale,m_GD ,_pd3dDevice);
@@ -107,33 +109,6 @@ Game::Game(ID3D11Device* _pd3dDevice, HINSTANCE _hInstance) :m_playTime(0), m_my
 	plane->SetScale(planeScale);
 	plane->playerPnt = base;
 	m_GameObjects.push_back(plane);
-
-	/*SpikedVB* spikes = new SpikedVB();
-	spikes->init(11, _pd3dDevice);
-	spikes->SetPos(Vector3(0.0f, 0.0f, 100.0f));
-	spikes->SetScale(4.0f);
-	m_GameObjects.push_back(spikes);
-
-	Spiral* spiral = new Spiral();
-	spiral->init(11, _pd3dDevice);
-	spiral->SetPos(Vector3(-100.0f, 0.0f, 0.0f));
-	spiral->SetScale(4.0f);
-	m_GameObjects.push_back(spiral);
-
-	Pillow* pillow = new Pillow();
-	pillow->init(11, _pd3dDevice);
-	pillow->SetPos( Vector3(-100.0f, 0.0f, -100.0f) );
-	pillow->SetScale(4.0f);
-	m_GameObjects.push_back(pillow);
-
-	Snail* snail = new Snail(_pd3dDevice, "../Assets/baseline.txt", 150, 0.98, 0.09f * XM_PI , 0.4f, Color(1.0f, 0.0f, 0.0f, 1.0f), Color(0.0f, 0.0f, 1.0f, 1.0f));
-	snail->SetPos(Vector3(-100.0f, 0.0f, 100.0f));
-	snail->SetScale(2.0f);
-	m_GameObjects.push_back(snail);
-
-	GameObject2D* logo = new GameObject2D("logo", _pd3dDevice);
-	logo->SetPos(200.0f * Vector2::One);
-	m_GameObject2Ds.push_back(logo);*/
 	
 	ID3D11DeviceContext* pd3dImmediateContext;
 	_pd3dDevice->GetImmediateContext(&pd3dImmediateContext);
@@ -141,8 +116,7 @@ Game::Game(ID3D11Device* _pd3dDevice, HINSTANCE _hInstance) :m_playTime(0), m_my
 	// Create DirectXTK spritebatch stuff
 	m_DD2D = new DrawData2D();
 	m_DD2D->m_Sprites.reset(new SpriteBatch(pd3dImmediateContext));
-	m_DD2D->m_Font.reset(new SpriteFont(_pd3dDevice, L"italic.spritefont"));
-		
+	m_DD2D->m_Font.reset(new SpriteFont(_pd3dDevice, L"italic.spritefont"));		
 	//create Draw Data
 	m_DD = new DrawData();
 	m_DD->pd3dImmediateContext = pd3dImmediateContext;
@@ -187,6 +161,8 @@ Game::~Game()
 
 	m_GameObject2Ds.clear();
 
+	TwTerminate(); //Terminate ATB
+
 	delete m_States;
 	delete m_myEF;
 	delete m_GD;
@@ -201,7 +177,7 @@ bool Game::update()
 
 	
 	
-
+	//Rotate the camera around the player by 1/16th of a full circle with each key press
 	if ((m_keyboardState[DIK_Q] & 0x80) && !(m_prevKeyboardState[DIK_Q] & 0x80))
 	{
 		m_TPSCam->m_rotation -= (XM_PIDIV4 / 2);
@@ -211,19 +187,13 @@ bool Game::update()
 		m_TPSCam->m_rotation += (XM_PIDIV4 / 2);
 	}
 	
-
+	//Close the program with escape
 	if (m_keyboardState[DIK_ESCAPE] & 0x80)
 	{
 		return false;
 	}
 
-	/*if (m_mouse_state.rgbButtons[2] & 0x80)
-	{
-		return false;
-	}*/
-
 	
-
 
 	//calculate frame time-step dt for passing down to game objects
 	DWORD currentTime = GetTickCount();
@@ -276,6 +246,7 @@ void Game::render(ID3D11DeviceContext* _pd3dImmediateContext)
 	//m_DD2D->m_Font->DrawString(m_DD2D->m_Sprites.get(), Helper::charToWChar(attempt.c_str()), Vector2(100, 10), Colors::Yellow);
 	m_DD2D->m_Sprites->End();
 	
+	//Draw the TweakBar.
 	TwDraw();
 
 	_pd3dImmediateContext->OMSetDepthStencilState(m_States->DepthDefault(), 0);

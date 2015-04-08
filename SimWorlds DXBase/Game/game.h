@@ -38,8 +38,8 @@ public:
 protected:
 	bool ReadKeyboard();
 	bool ReadMouse();
-	int menuWidth = 400;
-	int menuHeight = 600;
+	int menuWidth;
+	int menuHeight;
 
 	DWORD m_playTime; //amount of time since the game started
 

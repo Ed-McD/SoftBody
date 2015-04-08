@@ -22,6 +22,7 @@ void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 
 	verletAmp = 0.5f;
 	verletFreq = 2.0f;
+	verletWL = 1;
 	
 	springCoeff = 0.1f;
 	disturbance = 5.0f;
@@ -155,11 +156,12 @@ void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 	TwDefine("VariableMenu/Ripple label = 'Ripple (Press Enter to create a ripple)'");
 
 	TwAddVarRW(m_GD->myBar, "WaveSpeed", TW_TYPE_FLOAT, &WaveSpeed, " min=0 max=40 step=0.05 group= Verlet label = 'Wave Speed' ");
-	TwAddVarRW(m_GD->myBar, "Disturbance", TW_TYPE_FLOAT, &disturbance, " min=0 max=10 step=0.5 group= Verlet");
-	TwAddVarRW(m_GD->myBar, "Damping Force", TW_TYPE_FLOAT, &dampingForce, " min=0 max=0.2 step=0.001 group= Verlet");
-	TwAddVarRW(m_GD->myBar, "Wave Wrap Around", TW_TYPE_BOOLCPP, &wrapAround, "group= Verlet ");
+	TwAddVarRW(m_GD->myBar, "Disturbance", TW_TYPE_FLOAT, &disturbance, " min=0 max=10 step=0.01 group= Verlet");
+	TwAddVarRW(m_GD->myBar, "Damping Force", TW_TYPE_FLOAT, &dampingForce, " min=0 max=0.2 step=0.001 group= Verlet");	
 	TwAddVarRW(m_GD->myBar, "Spring Coefficient", TW_TYPE_FLOAT, &springCoeff, "min=0 max=1 step = 0.01 group= Verlet ");
 
+	TwAddVarRW(m_GD->myBar, "Disturbance WaveLength", TW_TYPE_INT8, &verletWL, "min = 1 max = 5 step = 1 group= Verlet ");
+	TwAddVarRW(m_GD->myBar, "Wave Wrap Around", TW_TYPE_BOOLCPP, &wrapAround, "group= Verlet ");
 	TwAddVarRW(m_GD->myBar, "Sin Wave propogation", TW_TYPE_BOOLCPP, &verletSin, " group= Verlet ");
 	TwAddVarRW(m_GD->myBar, "Verlet Amplitude", TW_TYPE_FLOAT, &verletAmp, " min=0 max=5 step=0.1 group= VerletSin ");
 	TwAddVarRW(m_GD->myBar, "Verlet Frequency", TW_TYPE_FLOAT, &verletFreq, " min=0 max=10 step=0.5 group= VerletSin ");
@@ -176,14 +178,30 @@ void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 void VBPlane::Tick(GameData* GD)
 {
 
+	if (disturbance >= 5)
+	{
+		TwDefine("VariableMenu/Disturbance step = 1.0");
+	}
+	else if (disturbance >= 0.5)
+	{
+		TwDefine("VariableMenu/Disturbance step = 0.05");
+	}
+	else
+	{
+		TwDefine("VariableMenu/Disturbance step = 0.01");
+	}
 
 	if (WaveSpeed >= 5)
 	{
 		TwDefine("VariableMenu/WaveSpeed step = 1.0");
 	}
-	else
+	else if (WaveSpeed>=0.5)
 	{
 		TwDefine("VariableMenu/WaveSpeed step = 0.05");
+	}
+	else
+	{
+		TwDefine("VariableMenu/WaveSpeed step = 0.01");
 	}
 
 	if (useSinSim)
@@ -199,6 +217,9 @@ void VBPlane::Tick(GameData* GD)
 
 	if (useVerlet)
 	{
+		TwDefine("VariableMenu/SinBased opened=false");
+		TwDefine("VariableMenu/Verlet opened=true");
+
 		if ((GD->keyboard[DIK_R] & 0x80) && !(GD->prevKeyboard[DIK_R] & 0x80))
 		{
 			memset(newVertices, 0, sizeof(float)*m_size*m_size);
@@ -212,10 +233,10 @@ void VBPlane::Tick(GameData* GD)
 			
 			currVertices[getLoc(playerPnt->publicPos.x/ m_scale, playerPnt->publicPos.z/m_scale)] += disturbance;
 
-			currVertices[getLoc(playerPnt->publicPos.x / m_scale + 1, playerPnt->publicPos.z / m_scale)] -= disturbance/4;
-			currVertices[getLoc(playerPnt->publicPos.x / m_scale - 1, playerPnt->publicPos.z / m_scale)] -= disturbance/4;
-			currVertices[getLoc(playerPnt->publicPos.x / m_scale, playerPnt->publicPos.z / m_scale + 1)] -= disturbance/4;
-			currVertices[getLoc(playerPnt->publicPos.x / m_scale, playerPnt->publicPos.z / m_scale - 1)] -= disturbance/4;
+			currVertices[getLoc(playerPnt->publicPos.x / m_scale + (verletWL * 1), playerPnt->publicPos.z / m_scale)] -= disturbance / (verletWL * 4);
+			currVertices[getLoc(playerPnt->publicPos.x / m_scale - (verletWL * 1), playerPnt->publicPos.z / m_scale)] -= disturbance / (verletWL * 4);
+			currVertices[getLoc(playerPnt->publicPos.x / m_scale, playerPnt->publicPos.z / m_scale + (verletWL * 1))] -= disturbance / (verletWL * 4);
+			currVertices[getLoc(playerPnt->publicPos.x / m_scale, playerPnt->publicPos.z / m_scale - (verletWL * 1))] -= disturbance / (verletWL * 4);
 
 
 		}		
@@ -224,6 +245,8 @@ void VBPlane::Tick(GameData* GD)
 	}
 	if (useSinSim) //tick for if the sin function based simulation is being used;
 	{
+		TwDefine("VariableMenu/Verlet opened=false");
+		TwDefine("VariableMenu/SinBased opened=true");
 
 		if ((GD->keyboard[DIK_RETURN] & 0x80) && !(GD->prevKeyboard[DIK_RETURN] & 0x80))
 		{
@@ -312,26 +335,28 @@ void VBPlane::Tick(GameData* GD)
 void VBPlane::TransformVerlet(GameData* GD)
 {
 	
-	float verl_dt = 0.01f;
+	float verl_dt = 0.01f; //Fixed value for dt as it can be unstable otherwise.
+
+	//nested for loops run through all the vertices.
 	for (int i = 0; i < m_size; i++)
 	{
 
 		for (int j = 0; j < m_size; j++)
 		{
 			
-			
+			//Find the current heights of all the vertices around the current one.
 			float UP;
 			float DOWN;
 			float LEFT;
 			float RIGHT;
-			UP = currVertices[getLoc(i-1, j)];
-			DOWN = currVertices[getLoc(i+1, j)];
-			LEFT = currVertices[getLoc(i, j-1)];
-			RIGHT = currVertices[getLoc(i, j+1)];
-			
-			
-			float diffGrad = WaveSpeed *(UP + DOWN + LEFT + RIGHT - 4.0f *currVertices[getLoc(i,j)]);
 
+			UP = currVertices[getLoc(i - 1, j)];
+			DOWN = currVertices[getLoc(i + 1, j)];
+			LEFT = currVertices[getLoc(i, j - 1)];
+			RIGHT = currVertices[getLoc(i, j + 1)];
+
+			// The actual Verlet intergration.
+			float diffGrad = WaveSpeed *(UP + DOWN + LEFT + RIGHT - 4.0f *currVertices[getLoc(i,j)]);
 
 			newVertices[getLoc(i, j)] = (((2 - dampingForce)* currVertices[getLoc(i, j)]) - (1 - dampingForce)*newVertices[getLoc(i, j)] + (springForce(currVertices[getLoc(i, j)])* (verl_dt*verl_dt)));
 
@@ -342,43 +367,36 @@ void VBPlane::TransformVerlet(GameData* GD)
 		}
 
 	}
+	
 	if (verletSin)
 	{ 
-		TwDefine("VariableMenu/VerletSin opened=true");
+		TwDefine("VariableMenu/VerletSin opened=true"); //Keep the verlet sin menu group open.
 		for (int i = 0; i < m_size; i++)
 		{
-			newVertices[getLoc(i, 0)] = verletAmp * sin(verletFreq * time);
+			newVertices[getLoc(i, 0)] = verletAmp * sin(verletFreq * time); //Overide the new positions for the edge vertices with a height base upon a sin wave
 		}
 	}
 	else
 	{
-		TwDefine("VariableMenu/VerletSin opened=false");
+		TwDefine("VariableMenu/VerletSin opened=false"); //Keep the verlet sin menu group closed.
 	}
 
 	for (int i = 0; i < m_numVertices; i++)
 	{
-		m_vertices[i].Pos.y = newVertices[getLoc(m_vertices[i].Pos.x, m_vertices[i].Pos.z)];
+		m_vertices[i].Pos.y = newVertices[getLoc(m_vertices[i].Pos.x, m_vertices[i].Pos.z)]; //copy the valuse from new vertices into the y value for the vertices.
 	}
 	
 
-
+	//Swap the arrays around ready for the verlet intergration next tick.
  	dummyVertices = newVertices;
 	newVertices = currVertices;
 	currVertices = dummyVertices;
 
-	
-
-
 }
 
+//Hookes law calculation of springforce;
 float VBPlane::springForce(float _height)
 {
-	/*if (_height < 0.0f)
-	{
-		_height = 0.0f - _height;
-	}*/
-
-
 	float MAX = 10.0f;
 	float force = 0.0f;
 	force = -(springCoeff * _height);
@@ -391,11 +409,14 @@ float VBPlane::springForce(float _height)
 
 }
 
+
+//This functions takes 2 dimensional co-ordinates and converts them to a 1-dimensional location in an array.
 int VBPlane::getLoc( int _i, int _j)
 {
+	//If wraparound is true...
 	if (wrapAround)
 	{
-		//Sets to opposite side.
+		//...sets to opposite side. This is used for the vertices around the current vertex.
 		if (_i == -1)
 		{
 			_i = m_size - 1;			

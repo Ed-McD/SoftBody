@@ -46,6 +46,7 @@ public:
 	int m_diagonal;
 	int m_centrepoint;
 	int rippleCount= 0;
+	int verletWL;
 	bool m_ripple;
 	bool m_waves;
 	bool useSinSim;
@@ -80,9 +81,9 @@ public:
 	virtual void Draw(DrawData* _DD);
 
 protected:
-	//this is to allow custom versions of this which create the basic cube and then distort it
-	//see Spirla, SpikedVB and Pillow
-	virtual void TransformSin();
+	
+
+	void TransformSin();
 	void TransformVerlet(GameData* _GD);
 	int getLoc(int _i, int _j);
 	float springForce(float _height);
