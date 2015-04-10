@@ -6,7 +6,21 @@
 
 void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 {
+	///Set initial values for variables of the simulation///
+
+	//Set pointers and global toggles.
+	m_GD = _GD;
+	m_Device = GD;
 	m_size = _size;
+	m_scale = _scale;
+	useRippleClass = true;
+	useVerlet = !useSinSim;
+	useSinSim = false; 
+	recalculateNorms = true;
+	m_ripple = false;
+	m_waves = true; 
+
+	//Sin sim variables
 	time = 0.0f;
 	freq = 2.0f;
 	amp = 2.5f;
@@ -15,36 +29,23 @@ void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 	rippleAmp = 15.0f;
 	rippleWL = 0.1f;
 	rippleFalloff = 0.75f;
-	m_scale = _scale;
-	m_diagonal = 0;
-	
+	m_diagonal = 0;	
 	rippleCount = 0;
 
-	verletAmp = 0.5f;
-	verletFreq = 2.0f;
-	verletWL = 1;
-	
+	//Verlet sim variables
+	verletAmp = 1.0f;
+	verletFreq = 5.0f;
+	verletWL = 2;	
 	springCoeff = 0.1f;
-	disturbance = 5.0f;
-	
-	WaveSpeed = 10.0f;
-	dampingForce = 0.01f;
-	recalculateNorms = true;
-	m_ripple = false;
-	m_waves = true; 
-	useRippleClass = true;
-	useSinSim = false; 
+	disturbance = 0.1f;	
+	WaveSpeed = 0.5f;
+	dampingForce = 0.05f;	
 	wrapAround = false;
-	useVerlet = !useSinSim;
-	m_GD = _GD;
-	m_Device = GD;
+	invertDisturbance = true;	
 
-	
-
+	//Colour and alpha of the surface
 	float aLvl = 0.25f;
 	Color surfaceColour = {0.0f, 0.0f, 1.0f, aLvl};
-
-
 
 
 	//calculate number of vertices and primatives
@@ -54,6 +55,7 @@ void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 	m_vertices = new myVertex[numVerts];
 	WORD* indices = new WORD[numVerts];
 
+	//Initialize the arrays for the verlet intergration.
 	newVertices = new float [m_size*m_size];
 	currVertices = new float [m_size*m_size];
 	memset(newVertices, 0, sizeof (float)*m_size*m_size);
@@ -74,7 +76,7 @@ void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 	{
 		for (int j = 0; j < (m_size - 1); j++)
 		{
-			//top
+			
 			m_vertices[vert].Color = surfaceColour;
 			m_vertices[vert++].Pos = Vector3((float)i, 0.5f * (float)(m_size - 1), (float)j);
 			m_vertices[vert].Color = surfaceColour;
@@ -91,21 +93,6 @@ void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 			
 		}
 	}
-
-
-
-	/*for (int i = 0; i < m_numPrims * 3; i++)
-	{
-		Vector3 vertScale = m_vertices[i].Pos;
-
-		Matrix scaleMat = Matrix::CreateScale(m_scale, 1.0f, m_scale);
-
-		Vector3 newScale = Vector3::Transform(vertScale, scaleMat);
-
-		m_vertices[i].Pos = newScale;
-	}*/
-	//carry out some kind of transform on these vertices to make this object more interesting
-	//Transform();
 
 	//calculate the normals for the basic lighting in the base shader
 	for (int i = 0; i < m_numPrims; i++)
@@ -124,18 +111,21 @@ void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 		m_vertices[V1].Norm = norm;
 		m_vertices[V2].Norm = norm;
 		m_vertices[V3].Norm = norm;
+
+		//store the normals of the flat plane so it can be reset if normals arent being recalculated every tick
 		initNormals.push_back(norm);
 	}
 
 
 	BuildIB(GD, indices);
+
+	//Calls the inherited function to set up the Dynamic Vertex Buffer for this object.
 	BuildDVB(GD, numVerts, m_vertices);
+
+	//Calls the inherited function to set up a raster state with wireframe enabled.
 	BuildWFRaster(GD);
 
-	//currVertices[getLoc(m_size / 2, m_size / 2)] += 1.0f;
-
-
-	//delete[] m_vertices; //this is no longer needed as this is now in the Vertex Buffer
+	//Adding all the variables to the Teak Bar
 	TwAddVarRW(m_GD->myBar, "Using Sin Based Simulation", TW_TYPE_BOOLCPP, &useSinSim, "group= Main Toggles ");	
 	TwAddVarRO(m_GD->myBar, "Using Verlet Simulation", TW_TYPE_BOOLCPP, &useVerlet, " group= Main Toggles ");
 	TwAddVarRW(m_GD->myBar, "Recalculate Normals", TW_TYPE_BOOLCPP, &recalculateNorms, " group= Main Toggles ");
@@ -152,9 +142,11 @@ void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 	TwAddVarRW(m_GD->myBar, "Ripple Wavelength", TW_TYPE_FLOAT, &rippleWL, " min=0 max=0.5 step=0.01 group= Ripple ");
 	TwAddVarRW(m_GD->myBar, "Ripple Falloff", TW_TYPE_FLOAT, &rippleFalloff, " min=0 max=2 step=0.01 group= Ripple ");
 
+	//Regrouping and labeling
 	TwDefine("VariableMenu/Ripple group=SinBased");
 	TwDefine("VariableMenu/Ripple label = 'Ripple (Press Enter to create a ripple)'");
 
+	//Adding Verlet Variables
 	TwAddVarRW(m_GD->myBar, "WaveSpeed", TW_TYPE_FLOAT, &WaveSpeed, " min=0 max=40 step=0.05 group= Verlet label = 'Wave Speed' ");
 	TwAddVarRW(m_GD->myBar, "Disturbance", TW_TYPE_FLOAT, &disturbance, " min=0 max=10 step=0.01 group= Verlet");
 	TwAddVarRW(m_GD->myBar, "Damping Force", TW_TYPE_FLOAT, &dampingForce, " min=0 max=0.2 step=0.001 group= Verlet");	
@@ -162,12 +154,12 @@ void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 
 	TwAddVarRW(m_GD->myBar, "Disturbance WaveLength", TW_TYPE_INT8, &verletWL, "min = 1 max = 5 step = 1 group= Verlet ");
 	TwAddVarRW(m_GD->myBar, "Wave Wrap Around", TW_TYPE_BOOLCPP, &wrapAround, "group= Verlet ");
+	TwAddVarRW(m_GD->myBar, "Invert Distubance", TW_TYPE_BOOLCPP, &invertDisturbance, " group= Verlet ");
 	TwAddVarRW(m_GD->myBar, "Sin Wave propogation", TW_TYPE_BOOLCPP, &verletSin, " group= Verlet ");
 	TwAddVarRW(m_GD->myBar, "Verlet Amplitude", TW_TYPE_FLOAT, &verletAmp, " min=0 max=5 step=0.1 group= VerletSin ");
-	TwAddVarRW(m_GD->myBar, "Verlet Frequency", TW_TYPE_FLOAT, &verletFreq, " min=0 max=10 step=0.5 group= VerletSin ");
-	
+	TwAddVarRW(m_GD->myBar, "Verlet Frequency", TW_TYPE_FLOAT, &verletFreq, " min=0 max=10 step=0.5 group= VerletSin ");	
 
-
+	//Regrouping
 	TwDefine("VariableMenu/VerletSin group=Verlet");
 	
 
@@ -177,7 +169,7 @@ void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 
 void VBPlane::Tick(GameData* GD)
 {
-
+	//Scales the step value in the Tweak Bar depending on current magnitude;
 	if (disturbance >= 5)
 	{
 		TwDefine("VariableMenu/Disturbance step = 1.0");
@@ -190,7 +182,7 @@ void VBPlane::Tick(GameData* GD)
 	{
 		TwDefine("VariableMenu/Disturbance step = 0.01");
 	}
-
+	//Different Varibale Scaling.
 	if (WaveSpeed >= 5)
 	{
 		TwDefine("VariableMenu/WaveSpeed step = 1.0");
@@ -204,6 +196,8 @@ void VBPlane::Tick(GameData* GD)
 		TwDefine("VariableMenu/WaveSpeed step = 0.01");
 	}
 
+
+	//Ensures the different simulations aren't running at once
 	if (useSinSim)
 	{
 		useVerlet = false;
@@ -215,11 +209,14 @@ void VBPlane::Tick(GameData* GD)
 		m_ripple = false;
 	}
 
+	//If using the verlet simulation...
 	if (useVerlet)
 	{
+		//Close the sin based simulation menu and open the verlet menu
 		TwDefine("VariableMenu/SinBased opened=false");
 		TwDefine("VariableMenu/Verlet opened=true");
 
+		//Sets all the vertex heights to 0 if 'R' is pressed
 		if ((GD->keyboard[DIK_R] & 0x80) && !(GD->prevKeyboard[DIK_R] & 0x80))
 		{
 			memset(newVertices, 0, sizeof(float)*m_size*m_size);
@@ -227,72 +224,92 @@ void VBPlane::Tick(GameData* GD)
 		}
 
 		
-
+		//Check to see if the player is moving...
 		if (playerPnt->moving)
-		{ 
-			
-			currVertices[getLoc(playerPnt->publicPos.x/ m_scale, playerPnt->publicPos.z/m_scale)] += disturbance;
+		{
+			if (invertDisturbance)
+			{
+				//...increase the vertex the player is closest to by the disturbance value...
+				currVertices[getLoc(playerPnt->publicPos.x / m_scale, playerPnt->publicPos.z / m_scale)] += disturbance;
 
-			currVertices[getLoc(playerPnt->publicPos.x / m_scale + (verletWL * 1), playerPnt->publicPos.z / m_scale)] -= disturbance / (verletWL * 4);
-			currVertices[getLoc(playerPnt->publicPos.x / m_scale - (verletWL * 1), playerPnt->publicPos.z / m_scale)] -= disturbance / (verletWL * 4);
-			currVertices[getLoc(playerPnt->publicPos.x / m_scale, playerPnt->publicPos.z / m_scale + (verletWL * 1))] -= disturbance / (verletWL * 4);
-			currVertices[getLoc(playerPnt->publicPos.x / m_scale, playerPnt->publicPos.z / m_scale - (verletWL * 1))] -= disturbance / (verletWL * 4);
+				//...and decrease 4 of the vertices around the player by a scaled factor of 4 to average to 0
+				//VerletWL changes the distance between the current centre of this ripple and the ones around it being incremented. 
 
+				currVertices[getLoc(playerPnt->publicPos.x / m_scale + (verletWL * 1), playerPnt->publicPos.z / m_scale)] -= disturbance / (verletWL * 4);
+				currVertices[getLoc(playerPnt->publicPos.x / m_scale - (verletWL * 1), playerPnt->publicPos.z / m_scale)] -= disturbance / (verletWL * 4);
+				currVertices[getLoc(playerPnt->publicPos.x / m_scale, playerPnt->publicPos.z / m_scale + (verletWL * 1))] -= disturbance / (verletWL * 4);
+				currVertices[getLoc(playerPnt->publicPos.x / m_scale, playerPnt->publicPos.z / m_scale - (verletWL * 1))] -= disturbance / (verletWL * 4);
+			}
+			else
+			{
+				//...decrease the vertex the player is closest to by the disturbance value...
+				currVertices[getLoc(playerPnt->publicPos.x / m_scale, playerPnt->publicPos.z / m_scale)] -= disturbance;
 
-		}		
+				//...and increase 4 of the vertices around the player by a scaled factor of 4 to average to 0
+				//VerletWL changes the distance between the current centre of this ripple and the ones around it being incremented. 
+
+				currVertices[getLoc(playerPnt->publicPos.x / m_scale + (verletWL * 1), playerPnt->publicPos.z / m_scale)] += disturbance / (verletWL * 4);
+				currVertices[getLoc(playerPnt->publicPos.x / m_scale - (verletWL * 1), playerPnt->publicPos.z / m_scale)] += disturbance / (verletWL * 4);
+				currVertices[getLoc(playerPnt->publicPos.x / m_scale, playerPnt->publicPos.z / m_scale + (verletWL * 1))] += disturbance / (verletWL * 4);
+				currVertices[getLoc(playerPnt->publicPos.x / m_scale, playerPnt->publicPos.z / m_scale - (verletWL * 1))] += disturbance / (verletWL * 4);
+			}
+		}
+		//Call the verlet transform function;
 		TransformVerlet(GD);
 
 	}
-	if (useSinSim) //tick for if the sin function based simulation is being used;
-	{
+
+	//If using the sin simulation...
+	if (useSinSim) 
+	{	
+		//..close the verlet menu and open the sin menu
 		TwDefine("VariableMenu/Verlet opened=false");
 		TwDefine("VariableMenu/SinBased opened=true");
-
+		
+		//Spawn a ripple on 'Enter'
 		if ((GD->keyboard[DIK_RETURN] & 0x80) && !(GD->prevKeyboard[DIK_RETURN] & 0x80))
 		{
 			
 			if (useRippleClass)
-			{
+			{	
+				//create a random origin
 				m_centrepoint = rand() % (100000);
-				//create a new ripple with different origin.
+				//create a new ripple instance and add it to the ripple list.
 				myRipples.push_back(new Ripple(rippleAmp, rippleFreq, rippleWL, m_vertices[m_centrepoint].Pos.x, m_vertices[m_centrepoint].Pos.z));
+				//increment the ripple count
 				rippleCount++;
 			}
 
 		}
 
+		//Iterate through the ripples
 		for (list<Ripple *>::iterator it = myRipples.begin(); it != myRipples.end(); it++)
 		{
-
+			//Add the dt to the ripples time value ripples
 			(*it)->m_time += m_dt;
+			//reduce the amplitude of the ripple by the falloff factor;
 			(*it)->m_initAmp -= (rippleFalloff *0.01f);
-			if ((*it)->m_initAmp < 0.0f)
+			
+			//If the amplitude is below 0, or the reset has been pressed...
+			if ((*it)->m_initAmp < 0.0f || (GD->keyboard[DIK_R] & 0x80) && !(GD->prevKeyboard[DIK_R] & 0x80))
 			{
-
+				//...delete the instance of the ripple class...
 				delete (*it);
+				//...and remove the pointer from the list
 				it = myRipples.erase(it);
 			}
 
 		}
 
+		//Call the sin transform function
+		TransformSin();		
 
-		TransformSin();
-
-		
-		if ((GD->keyboard[DIK_R] & 0x80) && !(GD->prevKeyboard[DIK_R] & 0x80)) //Reset to default values
-		{
-			myRipples.clear();
-		}
-		
-		if ((GD->keyboard[DIK_X] & 0x80) && !(GD->prevKeyboard[DIK_X] & 0x80))
-		{
-			m_ripple = !m_ripple;
-		}
 	}
 
+	//If reclaulate norms is true...
 	if (recalculateNorms)
 	{ 
-		//calculate the normals for the basic lighting in the base shader
+		//..recalculate the normals for the basic lighting in the base shader
 		for (int i = 0; i < m_numPrims; i++)
 		{
 			WORD V1 = 3 * i;
@@ -310,10 +327,13 @@ void VBPlane::Tick(GameData* GD)
 			m_vertices[V2].Norm = norm;
 			m_vertices[V3].Norm = norm;
 		}
+		//Norms are not reset to initial values.
 		normsReset = false;
 	}
+	//If norms arent reset to initial values...
 	else if (!normsReset)
 	{
+		//run through all the vertices and set to the flat plane values
 		for (int i = 0; i < m_numPrims; i++)
 		{
 			WORD V1 = 3 * i;
@@ -324,10 +344,11 @@ void VBPlane::Tick(GameData* GD)
 			m_vertices[V2].Norm = initNormals[i];
 			m_vertices[V3].Norm = initNormals[i];
 		}
+		//Norms have been reset to default
 		normsReset = true;
 	}
 	
-	
+	//Add the tick to the time counter;
 	time += GD->dt;
 	VBGO::Tick(GD);
 }
@@ -369,21 +390,23 @@ void VBPlane::TransformVerlet(GameData* GD)
 	}
 	
 	if (verletSin)
-	{ 
-		TwDefine("VariableMenu/VerletSin opened=true"); //Keep the verlet sin menu group open.
+	{	//Keep the verlet sin menu group open.
+		TwDefine("VariableMenu/VerletSin opened=true");
+
 		for (int i = 0; i < m_size; i++)
-		{
-			newVertices[getLoc(i, 0)] = verletAmp * sin(verletFreq * time); //Overide the new positions for the edge vertices with a height base upon a sin wave
+		{	//Overide the new positions for the edge vertices with a height base upon a sin wave
+			newVertices[getLoc(i, 0)] = verletAmp * sin(verletFreq * time); 
 		}
 	}
 	else
-	{
-		TwDefine("VariableMenu/VerletSin opened=false"); //Keep the verlet sin menu group closed.
+	{	//Keep the verlet sin menu group closed.
+		TwDefine("VariableMenu/VerletSin opened=false"); 
 	}
 
 	for (int i = 0; i < m_numVertices; i++)
-	{
-		m_vertices[i].Pos.y = newVertices[getLoc(m_vertices[i].Pos.x, m_vertices[i].Pos.z)]; //copy the valuse from new vertices into the y value for the vertices.
+	{	
+		//copy the valuse from new vertices into the y value for the vertices.
+		m_vertices[i].Pos.y = newVertices[getLoc(m_vertices[i].Pos.x, m_vertices[i].Pos.z)]; 
 	}
 	
 
@@ -417,19 +440,19 @@ int VBPlane::getLoc( int _i, int _j)
 	if (wrapAround)
 	{
 		//...sets to opposite side. This is used for the vertices around the current vertex.
-		if (_i == -1)
+		if (_i <= -1)
 		{
 			_i = m_size - 1;			
 		}
-		if (_i == m_size)
+		if (_i >= m_size)
 		{
 			_i = 0;			
 		}
-		if (_j == -1)
+		if (_j <= -1)
 		{
 			_j = m_size - 1;			
 		}
-		if (_j == m_size)
+		if (_j >= m_size)
 		{
 			_j = 0;			
 		}
@@ -437,19 +460,19 @@ int VBPlane::getLoc( int _i, int _j)
 	else
 	{
 		//Sets to self
-		if (_i == -1)
+		if (_i <= -1)
 		{
 			_i = 0;
 		}
-		if (_i == m_size)
+		if (_i >= m_size)
 		{
 			_i = m_size - 1;
 		}
-		if (_j == -1)
+		if (_j <= -1)
 		{
 			_j = 0;
 		}
-		if (_j == m_size)
+		if (_j >= m_size)
 		{
 			_j = m_size - 1;
 		}
@@ -463,6 +486,7 @@ int VBPlane::getLoc( int _i, int _j)
 
 void VBPlane::TransformSin()
 { 
+	// Runs through all the vertices
 	for (int j = 0; j < m_numVertices; j++)
 	{
 		float m_wavesPos = 0.0f;
@@ -470,10 +494,11 @@ void VBPlane::TransformSin()
 
 		if (m_waves)
 		{
+			//Switch direction of the waves
 			switch (m_diagonal)
 			{
 			case 0:
-				
+				//Basic sin function, the position in x/z is taken in to determine each vertexs height.
 				m_wavesPos = amp * sin((freq * time) + ((m_vertices[j].Pos.x) * waveLength));
 
 				break;
@@ -494,20 +519,25 @@ void VBPlane::TransformSin()
 				break;
 			}
 		}
-		
+		//If ripples are being used..
 		if (m_ripple)
 		{
+			//
 			if (useRippleClass)
 			{
+				//iterate through the ripples and add the value for each vetex for each ripple to the ripplePos...
 				for (list<Ripple *>::iterator it = myRipples.begin(); it != myRipples.end(); it++)
 				{
 					
 					m_ripplePos += (*it)->Calculate(m_vertices[j].Pos.x, m_vertices[j].Pos.z);
 
 				}
+				//..then divide ripplePos by the number of ripples for the average height for the vertex.
+				
 				m_vertices[j].Pos.y = (m_wavesPos+ m_ripplePos) / (rippleCount +1);
 
 			}
+			
 			else
 			{
 				float newAmp;
@@ -547,18 +577,15 @@ void VBPlane::TransformSin()
 	}
 }
 
+//F
 void VBPlane::Draw(DrawData* _DD)
 {
-
+	
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	ZeroMemory(&mappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
 	//Disable GPU access to the vertex buffer data.
 	_DD->pd3dImmediateContext->Map(m_VertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	
-	////Update the vertex buffer here.
-	//memcpy(mappedResource.pData, m_vertices, sizeof(m_vertices));
-
 	myVertex* p_vertices = (myVertex*)mappedResource.pData;
 
 	//Update the vertex buffer here.

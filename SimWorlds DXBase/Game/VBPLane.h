@@ -56,6 +56,7 @@ public:
 	bool recalculateNorms;
 	bool normsReset;
 	bool verletSin;
+	bool invertDisturbance;
 	
 
 
@@ -69,8 +70,8 @@ public:
 	VBPlane(){};
 	virtual ~VBPlane()
 	{
-		delete newVertices;
-		delete currVertices;
+		//delete newVertices;
+		//delete currVertices;
 		//delete dummyVertices;
 	};
 

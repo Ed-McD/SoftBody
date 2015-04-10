@@ -1,6 +1,7 @@
 #include "Ripple.h"
 
 
+//An instance of this class will hold the variables needed for calculating each ripple
 
 Ripple::Ripple(float _RA, float _RF, float _RWL, float _CPX, float _CPZ)
 {
@@ -26,6 +27,7 @@ float Ripple::Calculate( float vertX, float vertZ)
 	zDiff = (m_originZ - vertZ);
 	cpOffset = sqrtf((zDiff*zDiff) + (xDiff*xDiff));
 
+	//Reduces the freq, WL and Amp the further the vertx is from the centrepoint.
 	newAmp = (m_initAmp *(1 - (cpOffset / 1000)));
 	newWL = (m_initWL *(1 - (cpOffset / 1000)));
 	newFreq = (m_initFreq *(1 - (cpOffset / 1000)));
