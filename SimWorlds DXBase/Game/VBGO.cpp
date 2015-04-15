@@ -79,8 +79,12 @@ void VBGO::Draw(DrawData* _DD)
 
 	ID3D11RasterizerState* useRasterS;
 	//set raster state
+	//If wireframe is true...
 	if (wireframe)
 	{
+		//..use an objects m_pRasterState. 
+		//If the object has built a wireframe raterstae then that will be used
+		//Otherwise, the static version will be used.
 		useRasterS = m_pRasterState ? m_pRasterState : s_pRasterState;
 	}
 	else
@@ -226,7 +230,7 @@ void VBGO::Init(ID3D11Device* _GD)
 	rasterDesc.DepthBias = 0;
 	rasterDesc.DepthBiasClamp = 0.0f;
 	rasterDesc.DepthClipEnable = true;
-	rasterDesc.FillMode = D3D11_FILL_SOLID; //D3D11_FILL_WIREFRAME , D3D11_FILL_SOLID
+	rasterDesc.FillMode = D3D11_FILL_SOLID; 
 	rasterDesc.FrontCounterClockwise = true;
 	rasterDesc.MultisampleEnable = false;
 	rasterDesc.ScissorEnable = false;

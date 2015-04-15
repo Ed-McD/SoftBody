@@ -145,6 +145,7 @@ void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 	//Regrouping and labeling
 	TwDefine("VariableMenu/Ripple group=SinBased");
 	TwDefine("VariableMenu/Ripple label = 'Ripple (Press Enter to create a ripple)'");
+	
 
 	//Adding Verlet Variables
 	TwAddVarRW(m_GD->myBar, "WaveSpeed", TW_TYPE_FLOAT, &WaveSpeed, " min=0 max=40 step=0.05 group= Verlet label = 'Wave Speed' ");
@@ -161,7 +162,7 @@ void VBPlane::init(int _size, float _scale, GameData* _GD , ID3D11Device* GD)
 
 	//Regrouping
 	TwDefine("VariableMenu/VerletSin group=Verlet");
-	
+	TwDefine("VariableMenu/Verlet label = 'Verlet (Press Enter to create a ripple)'");
 
 }
 
@@ -221,6 +222,45 @@ void VBPlane::Tick(GameData* GD)
 		{
 			memset(newVertices, 0, sizeof(float)*m_size*m_size);
 			memset(currVertices, 0, sizeof(float)*m_size*m_size);
+		}
+		//If Return is pressed...
+		if ((GD->keyboard[DIK_RETURN] & 0x80) && !(GD->prevKeyboard[DIK_RETURN] & 0x80))
+		{
+			if (!invertDisturbance)
+			{
+				//...generate random co-ordinates
+				int Xrand = rand() % m_size *4;
+				int Yrand = rand() % m_size *4;
+				//...decrease the vertex the random point is closest to by the disturbance value...
+				currVertices[getLoc(Xrand / m_scale, Yrand / m_scale)] -= disturbance;
+
+				//...and increase 4 of the vertices around the random point by a scaled factor of 4 to average to 0
+				//VerletWL changes the distance between the current centre of this ripple and the ones around it being incremented. 
+
+				currVertices[getLoc(Xrand / m_scale + (verletWL * 1), Yrand / m_scale)] += disturbance / (verletWL * 4);
+				currVertices[getLoc(Xrand / m_scale - (verletWL * 1), Yrand / m_scale)] += disturbance / (verletWL * 4);
+				currVertices[getLoc(Xrand / m_scale, Yrand / m_scale + (verletWL * 1))] += disturbance / (verletWL * 4);
+				currVertices[getLoc(Xrand / m_scale, Yrand / m_scale - (verletWL * 1))] += disturbance / (verletWL * 4);
+			}
+			else
+			{ 
+				//...generate random co-ordinates
+				int Xrand = rand() % m_size *4;
+				int Yrand = rand() % m_size *4;
+				//...increase the vertex the random point is closest to by the disturbance value...
+				currVertices[getLoc(Xrand / m_scale, Yrand / m_scale)] += disturbance;
+
+				//...and decrease 4 of the vertices around the random point by a scaled factor of 4 to average to 0
+				//VerletWL changes the distance between the current centre of this ripple and the ones around it being incremented. 
+
+				currVertices[getLoc(Xrand / m_scale + (verletWL * 1), Yrand / m_scale)] -= disturbance / (verletWL * 4);
+				currVertices[getLoc(Xrand / m_scale - (verletWL * 1), Yrand / m_scale)] -= disturbance / (verletWL * 4);
+				currVertices[getLoc(Xrand / m_scale, Yrand / m_scale + (verletWL * 1))] -= disturbance / (verletWL * 4);
+				currVertices[getLoc(Xrand / m_scale, Yrand / m_scale - (verletWL * 1))] -= disturbance / (verletWL * 4);
+
+			}
+
+
 		}
 
 		
@@ -577,7 +617,6 @@ void VBPlane::TransformSin()
 	}
 }
 
-//F
 void VBPlane::Draw(DrawData* _DD)
 {
 	
