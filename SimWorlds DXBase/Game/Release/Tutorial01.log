@@ -1,26 +1,24 @@
-﻿Build started 20/03/2015 15:38:41.
-     1>Project "D:\EDMCD SIM\SoftBody\SimWorlds DXBase\Game\Tutorial01.vcxproj" on node 2 (Build target(s)).
+﻿Build started 07/04/2015 15:07:53.
+     1>Project "C:\Users\Ed\Documents\SoftBody\SimWorlds DXBase\Game\Tutorial01.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\Inc /I..\DXUT\Core /I..\DXUT\Optional /I..\External\AntTweakBar\include /Zi /nologo /W4 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _WIN32_WINNT=0x0600 /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /openmp- /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt  VBPlane.cpp
-         VBPlane.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\Inc /I..\DXUT\Core /I..\DXUT\Optional /I..\External\AntTweakBar\include /Zi /nologo /W4 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _WIN32_WINNT=0x0600 /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /arch:SSE2 /fp:fast /Zc:wchar_t /Zc:forScope /openmp- /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt  game.cpp
+         game.cpp
          C:\Program Files (x86)\Windows Kits\8.1\Include\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-     1>d:\edmcd sim\softbody\simworlds dxbase\game\ConstantBuffer.h(23): warning C4324: 'ConstantBuffer' : structure was padded due to __declspec(align())
-     1>VBPlane.cpp(34): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
-     1>VBPlane.cpp(47): warning C4244: '=' : conversion from 'int' to 'WORD', possible loss of data
-     1>VBPlane.cpp(75): warning C4018: '<' : signed/unsigned mismatch
-     1>VBPlane.cpp(89): warning C4018: '<' : signed/unsigned mismatch
-     1>VBPlane.cpp(91): warning C4244: 'initializing' : conversion from 'int' to 'WORD', possible loss of data
-     1>VBPlane.cpp(92): warning C4244: 'initializing' : conversion from 'int' to 'WORD', possible loss of data
-     1>VBPlane.cpp(93): warning C4244: 'initializing' : conversion from 'int' to 'WORD', possible loss of data
-     1>VBPlane.cpp(304): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-     1>VBPlane.cpp(269): warning C4100: 'GD' : unreferenced formal parameter
-     1>VBPlane.cpp(456): warning C4018: '<' : signed/unsigned mismatch
-     1>VBPlane.cpp(458): warning C4244: 'initializing' : conversion from 'int' to 'WORD', possible loss of data
-     1>VBPlane.cpp(459): warning C4244: 'initializing' : conversion from 'int' to 'WORD', possible loss of data
-     1>VBPlane.cpp(460): warning C4244: 'initializing' : conversion from 'int' to 'WORD', possible loss of data
-     1>VBPlane.cpp(516): warning C4244: 'argument' : conversion from 'float' to 'size_t', possible loss of data
+     1>c:\users\ed\documents\softbody\simworlds dxbase\game\GameObject2D.h(11): warning C4099: 'GameData' : type name first seen using 'struct' now seen using 'class'
+                 c:\users\ed\documents\softbody\simworlds dxbase\game\game.h(23) : see declaration of 'GameData'
+     1>c:\users\ed\documents\softbody\simworlds dxbase\game\terrain.h(14): warning C4100: 'GD' : unreferenced formal parameter
+     1>c:\users\ed\documents\softbody\simworlds dxbase\game\ConstantBuffer.h(23): warning C4324: 'ConstantBuffer' : structure was padded due to __declspec(align())
+     1>c:\users\ed\documents\softbody\simworlds dxbase\game\SpikedVB.h(14): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\ed\documents\softbody\simworlds dxbase\game\spiral.h(13): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\ed\documents\softbody\simworlds dxbase\game\pillow.h(15): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\ed\documents\softbody\simworlds dxbase\game\pillow.h(25): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\ed\documents\softbody\simworlds dxbase\game\helper.h(16): warning C4996: 'mbstowcs': This function or variable may be unsafe. Consider using mbstowcs_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdlib.h(528) : see declaration of 'mbstowcs'
+     1>game.cpp(23): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
+     1>game.cpp(267): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _itoa. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdlib.h(937) : see declaration of 'itoa'
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\EDMCD SIM\SoftBody\SimWorlds DXBase\Release\Game.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:..\External\AntTweakBar\lib d3d11.lib d3dcompiler.lib dxguid.lib winmm.lib comctl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib DirectXTK.lib DXUT.lib DXUTOpt.lib usp10.lib dinput8.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\Include\Manifest\dpiaware.manifest" /DEBUG /PDB:"D:\EDMCD SIM\SoftBody\SimWorlds DXBase\Release\Game.pdb" /SUBSYSTEM:WINDOWS /LARGEADDRESSAWARE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\EDMCD SIM\SoftBody\SimWorlds DXBase\Release\Game.lib" /MACHINE:X86 /SAFESEH  Release\Tutorial01.res
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Ed\Documents\SoftBody\SimWorlds DXBase\Release\Game.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:..\External\AntTweakBar\lib d3d11.lib d3dcompiler.lib dxguid.lib winmm.lib comctl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib DirectXTK.lib DXUT.lib DXUTOpt.lib usp10.lib dinput8.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\Include\Manifest\dpiaware.manifest" /DEBUG /PDB:"C:\Users\Ed\Documents\SoftBody\SimWorlds DXBase\Release\Game.pdb" /SUBSYSTEM:WINDOWS /LARGEADDRESSAWARE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Ed\Documents\SoftBody\SimWorlds DXBase\Release\Game.lib" /MACHINE:X86 /SAFESEH  Release\Tutorial01.res
          Release\camera.obj
          Release\CMOGO.obj
          Release\fileVBGO.obj
@@ -39,9 +37,9 @@
          Release\VBPlane.obj
          Generating code
          Finished generating code
-         Tutorial01.vcxproj -> D:\EDMCD SIM\SoftBody\SimWorlds DXBase\Release\Game.exe
-     1>Done Building Project "D:\EDMCD SIM\SoftBody\SimWorlds DXBase\Game\Tutorial01.vcxproj" (Build target(s)).
+         Tutorial01.vcxproj -> C:\Users\Ed\Documents\SoftBody\SimWorlds DXBase\Release\Game.exe
+     1>Done Building Project "C:\Users\Ed\Documents\SoftBody\SimWorlds DXBase\Game\Tutorial01.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:05.36
+Time Elapsed 00:00:05.92

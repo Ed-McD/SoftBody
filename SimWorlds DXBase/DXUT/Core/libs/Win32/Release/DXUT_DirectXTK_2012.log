@@ -1,9 +1,9 @@
-﻿Build started 20/03/2015 15:38:41.
-     1>Project "D:\EDMCD SIM\SoftBody\SimWorlds DXBase\DXUT\Core\DXUT_DirectXTK_2012.vcxproj" on node 3 (Build target(s)).
+﻿Build started 07/04/2015 12:26:07.
+     1>Project "C:\Users\Ed\Documents\SoftBody\SimWorlds DXBase\DXUT\Core\DXUT_DirectXTK_2012.vcxproj" on node 3 (Build target(s)).
      1>Lib:
-         DXUT_DirectXTK_2012.vcxproj -> D:\EDMCD SIM\SoftBody\SimWorlds DXBase\DXUT\Core\..\..\libs\Win32\Release\DXUT.lib
-     1>Done Building Project "D:\EDMCD SIM\SoftBody\SimWorlds DXBase\DXUT\Core\DXUT_DirectXTK_2012.vcxproj" (Build target(s)).
+         DXUT_DirectXTK_2012.vcxproj -> C:\Users\Ed\Documents\SoftBody\SimWorlds DXBase\DXUT\Core\..\..\libs\Win32\Release\DXUT.lib
+     1>Done Building Project "C:\Users\Ed\Documents\SoftBody\SimWorlds DXBase\DXUT\Core\DXUT_DirectXTK_2012.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.04
+Time Elapsed 00:00:00.05
